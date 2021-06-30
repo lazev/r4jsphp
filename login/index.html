@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html lang="pt-BR">
+	<head>
+		<title>Identifique-se</title>
+
+		<base href="../">
+
+		<script src="freeway.js.php"></script>
+
+		<!--R4HEADER-id1-->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Language" content="pt-br">
+		<meta name="Description" content="Contrat.io">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#2196f3"/>
+
+		<link rel="manifest" href="manifest.json">
+		<link rel="shortcut icon" href="_assets/icons/favicon.ico">
+		<link rel="apple-touch-icon" href="_assets/icons/icon-192x192.png">
+
+		<link rel="stylesheet" type="text/css" href="_vendor/r4/src/css/global.css" />
+		
+		<script defer src="_vendor/r4/src/js/dialog.class.js"></script>
+		<script defer src="_vendor/r4/src/js/effects.class.js"></script>
+		<script defer src="_vendor/r4/src/js/fields.class.js"></script>
+		<script defer src="_vendor/r4/src/js/pop.class.js"></script>
+		<script defer src="_vendor/r4/src/js/r4.class.js"></script>
+		<script defer src="_vendor/r4/src/js/table.class.js"></script>
+		<script defer src="_vendor/r4/src/js/warning.class.js"></script>
+		<!--/R4HEADER-->
+
+		<script defer src="login/login.class.js"></script>
+
+		<script>
+			const R4Init = () => {
+				Login.start();
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+
+			<h1>Identificação</h1>
+
+			<form id="formLogin" class="panel onCenter col-8">
+				<div id="login_user">E-mail de acesso</div>
+				<div id="login_pass">Senha de acesso</div>
+				<div id="login_save">Salvar dados de acesso</div>
+				<div id="login_btn">Entrar</div>
+				<a href="newuser/" class="onRight">Criar uma conta</a>
+			</form>
+
+	</body>
+</html>
