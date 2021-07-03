@@ -8,7 +8,9 @@ class Inicio {
 	public function salvarNome($userCod, $nome) {
 		global $db;
 		
-		if(!(int)$userCod){
+		$userCod = (int)$userCod;
+		
+		if(!$userCod){
 			$this->errMsg = 'Código não informado';
 			$this->errObs = 'Não foi possível identificar o código do cadastro';
 			return false;
@@ -23,14 +25,14 @@ class Inicio {
 		$db->sql("
 			update `usuarios`
 			set nome='$nome'
-			where codigo='$cod'
+			where codigo='$userCod'
 			limit 1
 		");
-		
+
 		$pega = $db->sql("
 			select nome
 			from `usuarios`
-			where codigo='$cod'
+			where codigo='$userCod'
 			limit 1
 		");
 		

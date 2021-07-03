@@ -1,42 +1,28 @@
 const Painel = {
-	
+
+	userNome: '',
+	setNomePop: null,
+
 	setPaths: function() {
-		let self = this;
-		self.pathAjax   = _CONFIG.rootURL +'painel/ajax.php';
-		self.pathFields = _CONFIG.rootURL +'painel/fields.json';
+		Painel.pathAjax   = _CONFIG.rootURL +'painel/ajax.php';
+		Painel.pathFields = _CONFIG.rootURL +'painel/fields.json';
 	},
-	
-	
-	start: function(callback){
-		let self = this;
 
-		self.setPaths();
-		
-		self.getInit()
-		.then(() => {
-			Fields.createFromFile(self.pathFields)
-			.then(() => {
-				if(typeof callback == 'function') {
-					callback();
-				}
-			});
-		})
-		.catch(ret => {
-			if(ret.status == 10) {
-				window.location = 'inicio/';
-			}
-		});
 
+	iniciar: function(){
+		Painel.setPaths();
+		Painel.getInit();
 	},
-	
+
 
 	getInit: function(){
-
-		$().getJSON(Inicio.pathAjax, {
+		let params = {
 			com: 'getInit'
-		})
+		};
+		$().getJSON(Painel.pathAjax, params)
 		.then(ret => {
-			
+
 		});
 	}
+
 };

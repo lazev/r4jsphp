@@ -2,10 +2,10 @@
 
 session_start();
 
-define('SYSTEMID',  'lara');
+define('SYSTEMID',  'lerio');
 
-define('ROOT',      '/workspace/lara/');
-define('ROOT_URL',  'https://lara-stlgm.run-us-west2.goorm.io/');
+define('ROOT',      '/workspace/lerio/');
+define('ROOT_URL',  'https://lerio-owoxm.run-us-west2.goorm.io/');
 
 define('DBUSER',  'sistema'   );
 define('DBPASS',  'abisla'    );

@@ -1,13 +1,12 @@
 <?php
 
 class DB {
-	
+
 	private $DBCon   = '';
 	private $hostNow = '';
 	private $baseNow = '';
 	private $debug   = false;
 
-	
 	public $errCod = 0;
 	public $errMsg = '';
 	public $errCom = '';
@@ -67,7 +66,60 @@ class DB {
 			}
 		}
 
-		return $this->DBCon;	
+		return $this->DBCon;
+	}
+
+
+	public function insert($tableName, $dataFields=[]) {
+
+		if(!$tableName) {
+			$this->errMsg = 'DB error';
+			$this->errObs = 'tableName is missing';
+			return false;
+		}
+
+		if(!is_array($dataFields)) {
+			$this->errMsg = 'DB error';
+			$this->errObs = 'dataFields must be array';
+			return false;
+		}
+
+		foreach($dataFields as $key => $value) {
+			if(!empty($key)) {
+				$fields[] = $key;
+				if($stripTags) $value = strip_tags($value);
+				$value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
+				$value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/u', '', $value);
+				$value = str_replace('\0', '/0', $value);
+				$values[] = addslashes($value);
+			}
+		}
+
+		$com = "insert into $tableName"
+
+		$field = implode(', ', $fields);
+		$value = implode('\', \'', $values);
+		$com = $com ." ($field) values ('$value');";
+
+		if(!$this->DBCon->query($com)) {
+			if($errorAlert) {
+				$this->errorMonitor(
+					'MySQL error on '
+					. $this->baseNow .'@'
+					. $this->hostNow .': '
+					. $this->DBCon->errno .' - '
+					. $this->DBCon->error .'. '
+					. 'Command: '. $com
+				);
+			}
+			$this->errCod = $this->DBCon->errno;
+			$this->errMsg = $this->DBCon->error;
+			$this->errCom = $com;
+			return false;
+		}
+
+		$
+
 	}
 
 
@@ -190,7 +242,7 @@ class DB {
 
 	}
 
-	
+
 	public function real_escape_string($str) {
 		return $this->DBCon->real_escape_string($str);
 	}
@@ -236,14 +288,14 @@ class DB {
 		error_log(PHP_EOL. $msg .PHP_EOL);
 	}
 
-	
+
 	public function getCurrentConfig() {
 		return [
 			'host'  => $this->hostNow,
 			'dbname' => $this->baseNow
 		];
 	}
-	
+
 
 	public function setDebug($bol) {
 		$this->debug = (($bol) ? true : false);

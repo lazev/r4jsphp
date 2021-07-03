@@ -77,7 +77,7 @@ const Dialog = {
 			if(ephemeral) over.setAttribute('ephemeral', 'true');
 
 			let closer = document.createElement('div');
-			closer.innerHTML = '<b>&#8678;</b>';
+			closer.innerHTML = '<b>&#8592;</b>';
 			closer.style.float = 'left';
 			closer.setAttribute('target', idElem);
 			closer.classList.add('R4DialogCloser');
