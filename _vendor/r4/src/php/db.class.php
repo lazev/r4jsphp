@@ -70,7 +70,7 @@ class DB {
 	}
 
 
-	public function insert($tableName, $dataFields=[]) {
+	public function insert($tableName, $dataFields=[], $stripTags=true, $errorAlert=true) {
 
 		if(!$tableName) {
 			$this->errMsg = 'DB error';
@@ -95,7 +95,7 @@ class DB {
 			}
 		}
 
-		$com = "insert into $tableName"
+		$com = "insert into $tableName";
 
 		$field = implode(', ', $fields);
 		$value = implode('\', \'', $values);
@@ -118,8 +118,7 @@ class DB {
 			return false;
 		}
 
-		$
-
+		return $this->getInsertId();
 	}
 
 

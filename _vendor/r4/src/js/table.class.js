@@ -1,55 +1,50 @@
 const Table = {
 
-	head: [],
-	body: [],
-	foot: [],
-
 	onOrderBy: {},
 	onPagination: {},
 	onRegPerPage: {},
+	onLineClick: function(){},
 
-
-	clear: function(){
-		Table.head = [];
-		Table.body = [];
-		Table.foot = [];
-	},
-
-
+	head: [],
+	body: [],
+	foot: [],
+	
 	create: function(opts){
 
 		if(!opts) opts = {};
 
-		let arrHead      = opts.arrHead;
-		let arrBody      = opts.arrBody;
-		let arrFoot      = opts.arrFoot;
-		let idDestiny    = opts.idDestiny;
-		let onOrderBy    = opts.onOrderBy;
-		let onRegPerPage = opts.onRegPerPage;
-		let onPagination = opts.onPagination;
-		let classes      = [];
+		Table.idDestiny   = opts.idDestiny;
 
-		let destiny = document.getElementById(idDestiny);
+		Table.head        = opts.arrHead;
+		Table.body        = opts.arrBody;
+		Table.foot        = opts.arrFoot;
+		Table.onLineClick = opts.onLineClick;
+		
+		let onOrderBy     = opts.onOrderBy;
+		let onRegPerPage  = opts.onRegPerPage;
+		let onPagination  = opts.onPagination;
+		let classes       = [];
 
 		if(opts.classes) classes.push(opts.classes);
-		classes.push('R4Table');
+		classes.push('R4');
 
-		let table = document.createElement('table');
-		let tbody = Table.createBody(arrBody);
-		let head  = Table.createHead(idDestiny, arrHead);
-		let foot  = Table.createFoot(arrFoot);
+		let destiny = document.getElementById(Table.idDestiny);
+		let table   = document.createElement('table');
+		let body    = Table.createBody();
+		let head    = Table.createHead();
+		let foot    = Table.createFoot();
 
 		table.setAttribute('class', classes.join(' '));
 
 		if(head) table.appendChild(head);
-		table.appendChild(tbody);
+		table.appendChild(body);
 		if(foot) table.appendChild(foot);
 
 		let aftertbl = document.createElement('div');
 		aftertbl.setAttribute('class', 'row clearfix');
 
 		if(onPagination) {
-			Table.onPagination[idDestiny] = onPagination;
+			Table.onPagination[Table.idDestiny] = onPagination;
 			let pgntn = Table.createPagination(destiny);
 			if(pgntn) aftertbl.appendChild(pgntn);
 
@@ -57,12 +52,13 @@ const Table = {
 			if(rowspg) aftertbl.appendChild(rowspg);
 		}
 
+		destiny.innerHTML = '';
 		destiny.appendChild(table);
 		destiny.appendChild(aftertbl);
 
-		if(onOrderBy) Table.onOrderBy[idDestiny] = onOrderBy;
+		if(onOrderBy) Table.onOrderBy[Table.idDestiny] = onOrderBy;
 
-		if(onRegPerPage) Table.onRegPerPage[idDestiny] = onRegPerPage;
+		if(onRegPerPage) Table.onRegPerPage[Table.idDestiny] = onRegPerPage;
 	},
 
 
@@ -187,7 +183,7 @@ const Table = {
 		} else {
 
 			let lnkFirst = document.createElement('button');
-			lnkFirst.setAttribute('class',  'R4Buttons bgWhite primary flat');
+			lnkFirst.setAttribute('class',  'R4 bgWhite primary flat');
 			lnkFirst.setAttribute('numPage', 0);
 			lnkFirst.innerHTML = '&#x219E';
 
@@ -196,7 +192,7 @@ const Table = {
 			boxFirst.appendChild(lnkFirst);
 
 			let lnkPrev = document.createElement('button');
-			lnkPrev.setAttribute('class',  'R4Buttons bgWhite primary flat');
+			lnkPrev.setAttribute('class',  'R4 bgWhite primary flat');
 			lnkPrev.setAttribute('numPage', nowPage-1);
 			lnkPrev.innerHTML = '&#x21BC';
 
@@ -215,7 +211,7 @@ const Table = {
 		} else {
 
 			let lnkNext = document.createElement('button');
-			lnkNext.setAttribute('class',  'R4Buttons bgWhite primary flat');
+			lnkNext.setAttribute('class',  'R4 bgWhite primary flat');
 			lnkNext.setAttribute('numPage', nowPage+1);
 			lnkNext.innerHTML = '&#x21C0';
 
@@ -224,7 +220,7 @@ const Table = {
 			boxNext.appendChild(lnkNext);
 
 			let lnkLast = document.createElement('button');
-			lnkLast.setAttribute('class',  'R4Buttons bgWhite primary flat');
+			lnkLast.setAttribute('class',  'R4 bgWhite primary flat');
 			lnkLast.setAttribute('numPage', lastpg);
 			lnkLast.innerHTML = '&#x21A0';
 
@@ -314,29 +310,29 @@ SVG Icons - svgicons.sparkk.fr
 	},
 
 
-	createHead: function(idDestiny, arrHead) {
+	createHead: function() {
 
-		if(!arrHead.length) return false;
+		if(!Table.head.length) return false;
 
 		let thead = document.createElement('thead');
 		let tr    = document.createElement('tr');
 		let th;
 
-		arrHead.forEach(function(cell){
+		Table.head.forEach(function(cell){
 			th = document.createElement('th');
 			th.innerHTML = cell.label;
 
 			if(cell.orderBy) {
 				th.setAttribute('orderBy', cell.orderBy);
 				th.addEventListener('click', function(event) {
-					if(typeof Table.onOrderBy[idDestiny] === 'function') {
+					if(typeof Table.onOrderBy[Table.idDestiny] === 'function') {
 
 						let direction = '';
 						let arrow = this.querySelector('.R4OrderArrow');
 
 						if(arrow) direction = arrow.getAttribute('direction') || '';
 
-						Table.onOrderBy[idDestiny](this.getAttribute('orderBy') +' '+ direction);
+						Table.onOrderBy[Table.idDestiny](this.getAttribute('orderBy') +' '+ direction);
 					}
 				});
 			}
@@ -349,15 +345,15 @@ SVG Icons - svgicons.sparkk.fr
 	},
 
 
-	createBody: function(arrBody) {
+	createBody: function() {
 		let tr;
 		let tbody = document.createElement('tbody');
 
-		if(!arrBody) return tbody;
+		if(!Table.body) return tbody;
 
-		if(!arrBody.length) return tbody;
+		if(!Table.body.length) return tbody;
 
-		arrBody.forEach(function(line){
+		Table.body.forEach(function(line){
 			tr = Table.createLine(line);
 			tbody.appendChild(tr);
 		});
@@ -374,15 +370,15 @@ SVG Icons - svgicons.sparkk.fr
 	},
 
 
-	insertBody: function(elem, arrBody) {
+	insertBody: function(elem) {
 		Table.clearBody(elem);
-		Table.appendBody(elem, arrBody);
+		Table.appendBody(elem);
 	},
 
 
-	appendBody: function(elem, arrBody) {
+	appendBody: function(elem) {
 
-		if(!arrBody.length) return false;
+		if(!Table.body.length) return false;
 
 		let tr;
 		let destiny = elem[0] || elem;
@@ -390,7 +386,7 @@ SVG Icons - svgicons.sparkk.fr
 
 		if(!tbody) return false;
 
-		arrBody.forEach(function(line){
+		Table.body.forEach(function(line){
 			tr = Table.createLine(line);
 			tbody.appendChild(tr);
 		});
@@ -404,10 +400,26 @@ SVG Icons - svgicons.sparkk.fr
 		tr = document.createElement('tr');
 		tr.setAttribute('value', line.value);
 
-		line.cells.forEach(function(cell, position){
+		if(typeof Table.onLineClick === 'function') {
+			tr.addEventListener('click', (event, elem) => {
+				if(!event.target.classList.contains('nonClickCol')) {
+					Table.onLineClick(
+						event.target.parentNode.getAttribute('value'),
+						event.target.parentNode
+					);
+				}
+			});
+		}
+
+		line.cells.forEach(function(value, position){
+			
+			if(Table.head[position].type == 'decimal') {
+				value = $().toEUNumber(value);
+			}
+			
 			td = document.createElement('td');
 
-			td.innerHTML = cell;
+			td.innerHTML = value;
 
 			if(line.classes) {
 				if(line.classes[position]) td.setAttribute('class', line.classes[position]);
@@ -420,17 +432,17 @@ SVG Icons - svgicons.sparkk.fr
 	},
 
 
-	createFoot: function(arrFoot) {
+	createFoot: function() {
 
-		if(!arrFoot) return false;
+		if(!Table.foot) return false;
 
-		if(!arrFoot.length) return false;
+		if(!Table.foot.length) return false;
 
 		let tfoot = document.createElement('tfoot');
 		let tr    = document.createElement('tr');
 		let td;
 
-		arrFoot.forEach(function(cell){
+		Table.foot.forEach(function(cell){
 			td = document.createElement('td');
 			td.innerHTML = cell.label;
 			tr.appendChild(td);
@@ -438,5 +450,14 @@ SVG Icons - svgicons.sparkk.fr
 
 		tfoot.appendChild(tr);
 		return tfoot;
+	},
+
+
+	getAllSel: function(idElem) {
+		let ret = [];
+		document.querySelectorAll('#'+ idElem +' input:checked').forEach(elem => {
+			ret.push(elem.value);
+		});
+		return ret;
 	}
 };

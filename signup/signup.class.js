@@ -1,32 +1,32 @@
-const NewUser = {
-	
+const SignUp = {
+
 	setPaths: function() {
 		let self = this;
-		self.pathAjax   = _CONFIG.rootURL +'newuser/ajax.php';
-		self.pathFields = _CONFIG.rootURL +'newuser/fields.json';
+		self.pathAjax   = _CONFIG.rootURL +'signup/ajax.php';
+		self.pathFields = _CONFIG.rootURL +'signup/fields.json';
 	},
-	
-	
+
+
 	start: function(callback){
 		let self = this;
-		
+
 		self.setPaths();
 
 		Fields.createFromFile(self.pathFields)
 		.then(() => {
-			
-			$('#formNewUser').submit(function(event){
+
+			$('#formSignUp').submit(function(event){
 				event.preventDefault();
-				NewUser.salvar();
+				SignUp.salvar();
 			});
-			
+
 			if(typeof callback == 'function') {
 				callback();
 			}
 		});
 	},
 
-	
+
 	salvar: function() {
 		let self = this;
 
@@ -34,9 +34,9 @@ const NewUser = {
 
 			let params = {
 				com:   'salvar',
-				user:  $('#newUser_user').val(),
-				pass:  $('#newUser_pass').val(),
-				pass2: $('#newUser_pass2').val(),
+				user:  $('#signUp_user').val(),
+				pass:  $('#signUp_pass').val(),
+				pass2: $('#signUp_pass2').val(),
 			};
 
 			$().getJSON(self.pathAjax, params)
@@ -53,10 +53,10 @@ const NewUser = {
 		}
 	},
 
-	
+
 	validar: function() {
 		return true;
-		
+
 	}
 
 };

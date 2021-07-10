@@ -1,20 +1,21 @@
 <?php
+if(!defined('R4ALREADYINIT')) {
+	define('R4ALREADYINIT', true);
 
-if(!isset($R4AlreadyInit)) {
-	$R4AlreadyInit = true;
-
-	require_once 'r4.class.php';
-	require_once 'db.class.php';
+	require 'r4.class.php';
+	require 'db.class.php';
 
 	$db = new DB();
-		
+
 	if(defined('DBBASE')) {
-		$dbtable = (defined('DBTABLE')) ? DBTABLE : '';
+		$dbtable = (defined('DBTABLE'))  ? DBTABLE : '';
 		$db->connect(DBBASE, $dbtable);
 	}
 
 } else {
 
-	$db->close();
-	
+	if($db) {
+		$db->close();
+	}
+
 }

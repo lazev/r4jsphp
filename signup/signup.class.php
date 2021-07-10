@@ -1,15 +1,14 @@
 <?php
+class SignUp {
 
-class NewUser {
-	
 	public $errCod = 0;
 	public $errMsg = '';
 	public $errObs = '';
 
-	
+
 	public function validaCad($params=[]) {
 		global $db;
-		
+
 		$user  = $params['user'];
 		$pass  = $params['pass'];
 		$pass2 = $params['pass2'];
@@ -25,24 +24,24 @@ class NewUser {
 			$this->errObs = 'É necessário informar a senha de acesso duas vezes';
 			return false;
 		}
-		
+
 		$veri = $db->sql("
 			select codigo from `usuarios`
 			where user='$user'
 			limit 1
 		");
-		
+
 		if($veri['codigo']) {
 			$this->errMsg = 'Usuário já cadastrado';
 			$this->errObs = 'O e-mail informado já está em uso';
 			$this->errCod = 10;
 			return false;
 		}
-		
+
 		return true;
 	}
 
-	
+
 	public function cadastrar($params=[]) {
 		global $db;
 
@@ -81,7 +80,7 @@ class NewUser {
 			'cod'  => $cod,
 			'user' => $user
 		];
-		
+
 	}
-	
+
 }

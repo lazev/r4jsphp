@@ -205,14 +205,14 @@ $.methods = {
 
 	addClass: function(className) {
 		this.each(el => {
-			el.classList.add(className);
-		});
+			el.classList.add(className)
+		})
 	},
 
 	removeClass: function(className) {
 		this.each(el => {
-			el.classList.remove(className);
-		});
+			el.classList.remove(className)
+		})
 	},
 
 	text: function(t) {
@@ -223,25 +223,26 @@ $.methods = {
 		}
 	},
 
-	val: function(t) {
-		if (arguments.length === 0) {
-			return this[0].value;
-		} else {
+	val: function(val) {
+		//Get
+		if(arguments.length === 0) {
+			return Fields.getVal(this[0]);
+		}
+
+		//Set
+		else {
 			this.each(el => {
-				if(el.getAttribute('R4Type') == 'switch') {
-					if(t) {
-						el.checked = true;
-					} else {
-						el.checked = false;
-					}
-				}
-				let ev = new Event('blur');
-				el.value = t;
-				el.dispatchEvent(ev);
+				return Fields.setVal(el, val)
 			});
 		}
 	},
 
+	reset: function() {
+		this.each(el => {
+			Fields.reset(el);
+		});
+	},
+	
 	html: function(t) {
 		if (arguments.length === 0) {
 			return this[0].innerHTML;
@@ -375,27 +376,32 @@ $.methods = {
 
 
 	//R4 FUNCTIONS
-	dialog: function(opts) {
+	dialog: async function(opts) {
 
 		if(opts === 'close') {
+			
 			Dialog.close(this[0].getAttribute('id'));
+		
 		} else {
 
+			let open = false;
+
 			if(opts === 'open') {
-				let open = true;
-				opts = {};
-			} else if(!opts) {
+				open = true;
+			}
+			else if(typeof opts != 'object') {
 				opts = {};
 			}
 
 			this.each(el => {
 				opts.elem = el;
+
 				let title = el.getAttribute('title');
-				if((title) && (!opts.title)) {
-					opts.title = title;
-				}
+
+				if((title) && (!opts.title)) opts.title = title;
+				
 				if(open) {
-					Dialog.open(opts);
+					Dialog.open(el.id);
 				} else {
 					Dialog.create(opts);
 				}
@@ -415,6 +421,57 @@ $.methods = {
 
 	hint: function(txt) {
 		Pop.hint(this, txt);
+	},
+	
+	
+	//OTHERS
+	round: function(num, dec) {
+		if(!num) return 0;
+		if(!dec) dec = 0;
+		num = Number(num).toFixed(10);
+		return parseFloat(Number(Math.round(num+'e'+dec)+'e-'+dec));
+	},
+
+	toUSNumber: function(num) {
+		while(num.indexOf('.') > -1) num = num.replace('.','');
+		num = parseFloat(num.replace(',', '.'));
+		if(!isNaN(num)) return num;
+		else return 0.00;
+	},
+	
+	toEUNumber: function(num) {
+		if(isNaN(num)) {
+			console.warn('Not a number:', num);
+			return num;
+		};
+		let str = num.toString();
+		while(str.indexOf(',') > -1) str = str.replace(',','');
+		str = str.replace('.', ',');
+		return str;
+	},
+
+	EUNumberMask: function(num, mindec, maxdec) {
+		if(!mindec) mindec = 0;
+		if(!maxdec) maxdec = mindec;
+
+		var sep    = '.';
+		var dec    = ',';
+
+		var number = $().round(num, maxdec)+'';
+		var s      = number.split('.');
+
+		if(sep) {
+			if(s[0].length > 3) {
+				s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+			}
+		}
+
+		if(mindec > 0) {
+			if(!s[1]) s[1] = '0';
+			while(s[1].length < mindec) s[1] += '0';
+		}
+
+		return (s[1]) ? s.join(dec) : s[0];
 	}
 };
 

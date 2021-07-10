@@ -129,7 +129,8 @@ const Inicio = {
 	
 	addHTMLConta:  function(dados){
 	
-		let t = '<div class="linhaConta" cod="'+ dados.codigo +'">'
+		let t = ''
+			+ '<div class="linhaConta" cod="'+ dados.codigo +'">'
 			+ '<div>'+ dados.codigo                 +'</div>'
 			+ '<div>'+ dados.nome                   +'</div>'
 			+ '<div>'+ $().dateMask(dados.dtAcesso) +'</div>'
@@ -146,7 +147,7 @@ const Inicio = {
 
 			$().getJSON(Inicio.pathAjax, params)
 			.then(ret => {
-				window.location = 'confer/';
+				window.location = 'produtos/';
 			});
 		});
 

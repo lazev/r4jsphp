@@ -5,20 +5,21 @@ const Dialog = {
 	onCloseFuncs: {},
 
 	create: function(opts) {
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 
 			if(!opts) opts = {};
 
 			let elem;
 
-			let id        = opts.id          || '';
-			let title     = opts.title       || '';
-			let html      = opts.html        || '';
-			let classes   = [];
-			let style     = opts.style       || {};
-			let open      = opts.open        || false;
-			let ephemeral = opts.ephemeral   || false;
-			let buttons   = opts.buttons     || [];
+			let id           = opts.id           || '';
+			let title        = opts.title        || '';
+			let html         = opts.html         || '';
+			let classes      = [];
+			let style        = opts.style        || {};
+			let open         = opts.open         || false;
+			let ephemeral    = opts.ephemeral    || false;
+			let closeMonitor = opts.closeMonitor || false;
+			let buttons      = opts.buttons      || [];
 
 			let onOpen    = opts.onOpen      || function(){};
 			let onCreate  = opts.onCreate    || function(){};
@@ -127,9 +128,7 @@ const Dialog = {
 					if(item.id) btn.setAttribute('id', item.id);
 
 					if(typeof item.onClick === 'function') {
-						btn.addEventListener('click', function(event){
-							item.onClick(event);
-						});
+						btn.addEventListener('click', item.onClick);
 					}
 					foot.appendChild(btn);
 				}

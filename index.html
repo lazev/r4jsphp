@@ -22,12 +22,15 @@
 		<script defer src="_vendor/r4/src/js/fields.class.js"></script>
 		<script defer src="_vendor/r4/src/js/pop.class.js"></script>
 		<script defer src="_vendor/r4/src/js/r4.class.js"></script>
+		<script defer src="_vendor/r4/src/js/sbar.class.js"></script>
 		<script defer src="_vendor/r4/src/js/table.class.js"></script>
 		<script defer src="_vendor/r4/src/js/warning.class.js"></script>
 		<!--/R4HEADER-->
 
 		<script>
 			const R4Init = () => {
+				Sbar.create({id:'menu', direction:'left'});
+				Sbar.create({id:'cardapio', direction:'down', onOpen:function(){ Warning.on('Cardapio aberto') }, parent:document.getElementById('menu') });
 				//$().getJSON('manifest.json')
 				//.then(ret => console.log(ret));
 			}
@@ -36,9 +39,15 @@
 	<body>
 		<div class="container">
 			<h1>Sistema Lerio</h1>
-			
-			<a href="newuser/">Cadastre-se</a> <br><br>
+
+			<a href="signup/">Cadastre-se</a> <br><br>
 			<a href="login/">Identifique-se</a>
+		</div>
+		<div id="menu" class="bgSuccess white" style="width: 80%; height: 100%;">
+			Menu lateral
+		</div>
+		<div id="cardapio" class="bgFancy" style="width: 80%; height: 90%;">
+			Menu superior
 		</div>
 	</body>
 </html>

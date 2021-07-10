@@ -25,6 +25,8 @@ class Login {
 			return false;
 		}
 		
+		//$db->setDebug(1);
+		
 		$dados = $db->sql("select * from `usuarios` where user='$user' limit 1");
 		
 		if(!$this->validPass($pass, $dados['pass'])) {

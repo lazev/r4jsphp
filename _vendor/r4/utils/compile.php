@@ -3,9 +3,9 @@
 
 chdir(dirname(__FILE__));
 
-$headerFile = '_vendor/r4/src/templates/header.html';
+$headerFile = '_assets/templates/header.html';
 
-chdir('../../../../');
+chdir('../../../');
 
 $headerCont = file_get_contents($headerFile);
 

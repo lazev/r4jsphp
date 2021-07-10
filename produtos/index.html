@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="pt-BR">
 	<head>
-		<title>New user</title>
+		<title>Produtos</title>
 
 		<base href="../">
 
@@ -20,12 +20,13 @@
 		<link rel="apple-touch-icon" href="_assets/icons/icon-192x192.png">
 
 		<link rel="stylesheet" type="text/css" href="_vendor/r4/src/css/global.css" />
-
+		
 		<script defer src="_vendor/r4/src/js/dialog.class.js"></script>
 		<script defer src="_vendor/r4/src/js/effects.class.js"></script>
 		<script defer src="_vendor/r4/src/js/fields.class.js"></script>
 		<script defer src="_vendor/r4/src/js/pop.class.js"></script>
 		<script defer src="_vendor/r4/src/js/r4.class.js"></script>
+		<script defer src="_vendor/r4/src/js/sbar.class.js"></script>
 		<script defer src="_vendor/r4/src/js/table.class.js"></script>
 		<script defer src="_vendor/r4/src/js/warning.class.js"></script>
 		<!--/R4HEADER-->
@@ -34,19 +35,39 @@
 		<script defer src="produtos/produtos.class.js"></script>
 
 		<script>
-			const R4Init = () => {
-				Produtos.iniciar();
+			const R4Init = async () => {
+				await Produtos.init()
+				Produtos.list();
 			}
 		</script>
 	</head>
 	<body>
 		<div class="container">
-			<h1>Ola <span class="labelUserNome"></span></h1>
 
-			<div id="boxLinks">
-				<a href="/produtos">Produtos</a>
-			</div>
-
+			<header>
+				<button onclick="Produtos.delete('listaProdutos')" class="R4 bgDanger white bold onRight"> x </button>
+				<button onclick="Produtos.insert()" class="R4 bgSuccess white bold onRight"> + </button>
+				<h2>
+					Produtos
+				</h2>
+			</header>
+			
+			<section>
+				<div id="listaProdutos">
+					
+				</div>
+			</section>
+			
+			<form id="formProdutos" fieldsPrefix="prod" title="Cadastro de produtos" class="hidden">
+				<div class="row">
+					<div class="col-12" id="prod_nome">Nome do produto</div>
+					<div class="col-6" id="prod_categoria">Categoria</div>
+					<div class="col-6" id="prod_preco">Preco de venda</div>
+					<div class="col-12" id="prod_tags">Tags</div>
+					<div class="col-12" id="prod_comEstoque">Controlar estoque</div>
+				</div>
+			</form>
+			
 		</div>
 	</body>
 

@@ -90,7 +90,8 @@ const Fields = {
 			id:   id,
 			name: name,
 			//required: 'required',
-			autocomplete: 'off'
+			autocomplete: 'off',
+			R4Type: item.type
 		};
 
 		if(item.type == 'textarea') {
@@ -111,17 +112,21 @@ const Fields = {
 							elem.getAttribute('type') === 'password' ? 'text' : 'password'
 						);
 					});
-				break;
+					break;
 				case 'integer':
 				case 'integer-':
 					type = 'number';
-					attrib.specialType = item.type;
 
 					if(item.type == 'integer') {
 						if(item.min < 0) item.min = 0;
 					}
 
 				break;
+				case 'money':
+				case 'decimal':
+					type = 'text';
+					
+					break;
 				default:
 					type = 'text';
 			}
@@ -300,14 +305,14 @@ const Fields = {
 		if(item.classes) classes.push(item.classes);
 
 		attrib.class = classes.join(' ');
+		
+		if(checked) attrib.checked = true;
 
 		if(attr) {
 			for(let k in attr) attrib[k] = attr[k];
 		}
 
 		for(let k in attrib) elem.setAttribute(k, attrib[k]);
-
-		elem.checked = (checked);
 
 		if(item.label) {
 			label = document.createElement('label');
@@ -321,6 +326,46 @@ const Fields = {
 		wrap.appendChild(label);
 
 		return wrap;
+	},
+	
+	
+	getVal: function(elem) {
+		if(typeof elem === 'undefined') {
+			console.warn('Undefined field');
+			return '';
+		} else {
+			let type = elem.getAttribute('R4Type');
+			switch(type) {
+				case 'switch': return (elem.checked) ? elem.value : 0;
+				case 'money':  return $().toUSNumber(elem.value);
+				default:       return elem.value;
+			}
+		}
+	},
+	
+	
+	setVal: function(elem, value) {
+		let type = elem.getAttribute('R4Type');
+		switch(type) {
+			case 'switch':
+				if(!value || value == '0' || value == 'false') elem.checked = false;
+				else elem.checked = true;
+				break;
+			case 'money':
+				elem.value = $().toEUNumber(value);
+				break;
+			default: 
+				elem.value = value;
+		}
+		elem.dispatchEvent(new Event('blur'));
+	},
+	
+	
+	reset: function(elem) {
+		elem.reset();
+		elem.querySelectorAll('input').forEach(elem => { elem.dispatchEvent(new Event('blur')) });
+		elem.querySelectorAll('select').forEach(elem => { elem.dispatchEvent(new Event('blur')) });
+		elem.querySelectorAll('textarea').forEach(elem => { elem.dispatchEvent(new Event('blur')) });
 	}
 
 };
