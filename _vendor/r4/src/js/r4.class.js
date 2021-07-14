@@ -1,15 +1,16 @@
 const R4SWorkerPath = 'sworker.js';
 
-document.addEventListener('DOMContentLoaded', function() {
-	$().init((typeof R4Init === 'function') ? R4Init : null);
-});
+//document.addEventListener('DOMContentLoaded', function() {
+//	$().init((typeof R4Init === 'function') ? R4Init : null);
+//});
 
 
 $.methods = {
 
 	//PURE FUNCTIONS
 
-	init: function(R4Init) {
+	init: function() {
+			
 		$().listeners()
 
 		if(typeof R4Init === 'function') R4Init()
@@ -99,13 +100,19 @@ $.methods = {
 
 			let xhr = new XMLHttpRequest();
 
-			var strParams;
+			let strParams;
 
 			xhr.open(method, url, true);
 
-			if (typeof params === 'object') {
+			if(typeof params === 'object') {
 				strParams = new FormData();
-				for (var key in params) strParams.append(key, params[key]);
+				for(var key in params) {
+					if(typeof params[key] === 'object') {
+						for(let key2 in params[key]) {
+							strParams.append(key +'['+ key2 +']', params[key][key2]);
+						}
+					} else strParams.append(key, params[key]);
+				}
 			} else {
 				strParams = params;
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -142,20 +149,25 @@ $.methods = {
 
 	getScript: function(files) {
 		return new Promise((resolve, reject) => {
+			let counter  = 0;
 			let arrFiles = [];
 
-			if(typeof files === 'string') arrFiles = [files]
-			else arrFiles = files
+			if(typeof files === 'string') arrFiles = [files];
+			else arrFiles = files;
 
 			arrFiles.map(file => {
-				let script   = document.createElement('script')
-				script.src   = file
-				script.async = 1
-				document.head.append(script)
-			})
+				counter++;
 
-			resolve()
-		})
+				let script    = document.createElement('script');
+				script.src    = file;
+				script.onload = () => {
+					counter--;
+					if(counter === 0) resolve();
+				};
+
+				document.head.append(script);
+			});
+		});
 	},
 
 
@@ -237,6 +249,22 @@ $.methods = {
 		}
 	},
 
+	typeEffect: function(txt) {
+		this.each(el => {
+			let newTxt = '';
+			var typeEffectInterval = setInterval(() => {
+				if(newTxt.length < txt.length) {
+					newTxt = txt.substr(0, (newTxt.length+1));
+					el.innerHTML = newTxt + '_';
+				} else {
+					clearInterval(typeEffectInterval);
+					el.innerHTML = txt;
+				}
+			}, 15);
+			
+		});
+	},
+	
 	reset: function() {
 		this.each(el => {
 			Fields.reset(el);

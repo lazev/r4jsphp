@@ -81,23 +81,83 @@ class Produtos {
 	}
 	
 	
-	public function list($arrFiltros) {
+	private function listFilter($listFilter=[], $listParams=[]) {
+
+		if(!is_array($listParams)) $listParams = [];
+		if(!is_array($listFilter)) $listFilter = [];
+
+		$arrFilter  = [];
+		$orderBy    = $listParams['orderBy']    ?: 'nome';
+		$nowPage    = $listParams['nowPage']    ?: 1;
+		$regPerPage = $listParams['regPerPage'] ?: 15;
+		$limit      = $regPerPage*($nowPage-1) .','. $regPerPage;
+
+		//Filters
+
+		$filter = $listFilter['busca'];
+		if($filter) {
+			$arrFilter[] = "(codigo=$filter or busca like '%$filter%')";
+		}
+
+		$filter = $listFilter['categoria'];
+		if($filter) {
+			$arrFilter[] = "categoria like '%$filter%'";
+		}
+
+		return [
+			'limit'      => $limit,
+			'orderBy'    => $orderBy,
+			'nowPage'    => $nowPage,
+			'regPerPage' => $regPerPage,
+			'strFilter'  => (count($arrFilter)) ? implode(' and ', $arrFilter) : ''
+		];
+	}
+
+
+	public function list($listFilter, $listParams) {
 		global $db;
 
-		$lista = $db->sql("
+		$params = $this->listFilter($listFilter, $listParams);
+
+		$limit      = $params['limit'];
+		$orderBy    = $params['orderBy'];
+		$nowPage    = $params['nowPage'];
+		$regPerPage = $params['regPerPage'];
+		$strFilter  = $params['strFilter'];
+
+		//$db->setDebug(1);
+		
+		$list = $db->sql("
 			select *
 			from `produtos`
 			where ativo = 1
-			order by nome
+			$strFilter
+			order by $orderBy
+			limit $limit
 		");
 
+		$count = $db->sql("
+			select count(*) as 'total'
+			from `produtos`
+			where ativo = 1
+			$strFilter
+			limit 1
+		");
+
+		$info = [
+			'orderBy'    => $orderBy,
+			'nowPage'    => $nowPage,
+			'regPerPage' => $regPerPage,
+			'totalReg'   => $count['total']
+		];
+
 		return [
-			'list' => $lista,
+			'list' => $list,
 			'info' => $info
 		];
 	}
-	
-	
+
+
 	public function delete($ids) {
 		global $db;
 		

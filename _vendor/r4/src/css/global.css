@@ -19,6 +19,25 @@
 @import url(table.css);
 @import url(warning.css);
 
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #4691f6;
+}
+
+.svg-icon circle {
+  stroke: #4691f6;
+  stroke-width: 1;
+}
 
 .bgPrimary { background-color: #2196f3 !important; }
 .bgInfo    { background-color: #673ab7 !important; }
@@ -34,7 +53,7 @@
 .primary { color: #2196f3 !important; }
 .info    { color: #673ab7 !important; }
 .danger  { color: #e81e62 !important; }
-.success { color: #009688 !important; }
+.success { color: #008275 !important; }
 .warning { color: #f37e21 !important; }
 .fancy   { color: #cddc39 !important; }
 .grey    { color: #616161 !important; }
@@ -55,6 +74,18 @@
 .paspatur { padding: 20px; }
 
 .transition { transition: 0.2s ease-out; }
+
+.clickable { cursor: pointer; }
+
+.spinning {
+	animation: spin-animation 0.5s infinite;
+	display: inline-block;
+}
+
+@keyframes spin-animation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
+}
 
 * {
 	font-family: 'Lato', Helvetica, sans-serif;

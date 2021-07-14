@@ -51,9 +51,10 @@ switch($_REQUEST['com']) {
 
 	case 'list':
 
-		$cod = (int)$_REQUEST['codProduto'];
+		$listFilter = $_REQUEST['listFilter'];
+		$listParams = $_REQUEST['listParams'];
 
-		$dados = $produtos->list($cod);
+		$dados = $produtos->list($listFilter, $listParams);
 
 		if($dados === false) {
 			R4::dieAPI(0, $produtos->errMsg, $produtos->errObs);

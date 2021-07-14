@@ -33,13 +33,13 @@
 	height: 100%;
 }
 
-.R4Overlay .R4Dialog > .R4DialogHeader::after {
+.R4Overlay .R4Dialog > header::after {
 	content: "";
 	clear: both;
 	display: table;
 }
 
-.R4Overlay .R4Dialog > .R4DialogHeader > .R4DialogTitle {
+.R4Overlay .R4Dialog > header > .R4DialogTitle {
 	font-weight: bold;
 	padding: 5px 10px;
 	display: inline-block;
@@ -50,32 +50,30 @@
 	*/
 }
 
-.R4Overlay .R4Dialog > .R4DialogHeader > .R4DialogCloser {
+.R4Overlay .R4Dialog > header > .R4DialogCloser {
 	float: left;
 	padding: 0px 10px;
-	border-bottom: 1px solid #cecece;
-	border-right: 1px solid #cecece;
 	cursor: pointer;
 	font-size: 28px;
 }
 
-.R4Overlay .R4Dialog > .R4DialogBody {
+.R4Overlay .R4Dialog > section {
 	padding: 20px;
 	min-height: 100px;
 }
 
-.R4Overlay .R4Dialog > .R4DialogFooter {
+.R4Overlay .R4Dialog > footer {
 	position: sticky;
 	bottom: 0;
 	pointer-events: none;
 }
 
-.R4Overlay .R4Dialog > .R4DialogFooter > button {
+.R4Overlay .R4Dialog > footer > button {
 	margin: 10px 10px 15px 0;
 	pointer-events: auto;
 }
 
-.R4Overlay .R4Dialog > .R4DialogFooter::after {
+.R4Overlay .R4Dialog > footer::after {
 	content: "";
 	clear: both;
 	display: table;

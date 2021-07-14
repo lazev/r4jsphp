@@ -19,57 +19,67 @@
 		<link rel="shortcut icon" href="_assets/icons/favicon.ico">
 		<link rel="apple-touch-icon" href="_assets/icons/icon-192x192.png">
 
-		<link rel="stylesheet" type="text/css" href="_vendor/r4/src/css/global.css" />
-		
-		<script defer src="_vendor/r4/src/js/dialog.class.js"></script>
-		<script defer src="_vendor/r4/src/js/effects.class.js"></script>
-		<script defer src="_vendor/r4/src/js/fields.class.js"></script>
-		<script defer src="_vendor/r4/src/js/pop.class.js"></script>
-		<script defer src="_vendor/r4/src/js/r4.class.js"></script>
-		<script defer src="_vendor/r4/src/js/sbar.class.js"></script>
-		<script defer src="_vendor/r4/src/js/table.class.js"></script>
-		<script defer src="_vendor/r4/src/js/warning.class.js"></script>
+		<script defer src="_vendor/r4/src/js/autoload.js"></script>
 		<!--/R4HEADER-->
 
-		<link rel="stylesheet" type="text/css" href="produtos/style.css" />
 		<script defer src="produtos/produtos.class.js"></script>
-
 		<script>
 			const R4Init = async () => {
 				await Produtos.init()
 				Produtos.list();
 			}
 		</script>
+		<style>
+			.loadOverlay {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				background: lightgray;
+				color: black;
+				text-align: center;
+				padding: 200px 0;
+				z-index: 9999;
+				font-family: monospace;
+				font-size: 11px
+			}
+		</style>
 	</head>
 	<body>
-		<div class="container">
-
-			<header>
-				<button onclick="Produtos.delete('listaProdutos')" class="R4 bgDanger white bold onRight"> x </button>
-				<button onclick="Produtos.insert()" class="R4 bgSuccess white bold onRight"> + </button>
-				<h2>
-					Produtos
-				</h2>
-			</header>
-			
+		<div class="loadOverlay hidden">
+			<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAoAAAAJCAIAAACExCpEAAAAz0lEQVQYV12PIQ+CQABGP52TdBQuQbKZpEABiyYjiUbiN6gFig2TM9hMNmfApMnkLM6gVzRdgmSCdCYDoNNX396+fTXGmBACBZIk4Yc6nvGwZ1mWZRhGb3jI/jV15qfLZtxRCUFeWh5Hq2sGoA4A2W6xlPzRQKkihebr6TYpNb9z1Tb1rtNvFduy2W8ntwfQAACqkfSeqJ7vVnnKU0KVstYGnnmOgpgLABDJMQrWTc/VgRpjDAAE30WT2Z6DIBfU9sPQ0+WvLhDZM38RSj/v31qsSxukujBvAAAAAElFTkSuQmCC">
+			Carregando...
+		</div>
+		<header>
+			<nav class="onRight">
+				<button onclick="Produtos.insert()" class="R4 bgSuccess white bold"> + </button>
+				<button onclick="Produtos.delete('listaProdutos')" class="R4 bgDanger white bold"> x </button>
+			</nav>
+			<h2>
+				Produtos
+			</h2>
+		</header>
+		<main>
 			<section>
 				<div id="listaProdutos">
 					
 				</div>
 			</section>
-			
-			<form id="formProdutos" fieldsPrefix="prod" title="Cadastro de produtos" class="hidden">
-				<div class="row">
-					<div class="col-12" id="prod_nome">Nome do produto</div>
-					<div class="col-6" id="prod_categoria">Categoria</div>
-					<div class="col-6" id="prod_preco">Preco de venda</div>
-					<div class="col-12" id="prod_tags">Tags</div>
-					<div class="col-12" id="prod_comEstoque">Controlar estoque</div>
-				</div>
-			</form>
-			
-		</div>
+		</main>
+		<footer></footer>
+		
+		<!-- hidden elems -->
+		<form id="formProdutos" fieldsPrefix="prod" title="Cadastro de produtos" class="hidden">
+			<div class="row">
+				<div class="col-12" id="prod_nome">Nome do produto</div>
+				<div class="col-6" id="prod_categoria">Categoria</div>
+				<div class="col-6" id="prod_preco">Preco de venda</div>
+				<div class="col-12" id="prod_tags">Tags</div>
+				<div class="col-12" id="prod_comEstoque">Controlar estoque</div>
+			</div>
+		</form>
 	</body>
-
-
+	<link rel="stylesheet" type="text/css" href="produtos/style.css" />
+	<link rel="stylesheet" type="text/css" href="_vendor/r4/src/css/global.css" />
 </html>

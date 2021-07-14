@@ -15,3 +15,7 @@ table.R4.center td {
 table.R4 > thead > tr > th[orderBy] {
 	cursor: pointer;
 }
+
+table.R4 > tbody > tr > td.nonClickCol {
+	cursor: default;
+}

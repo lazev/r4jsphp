@@ -1,5 +1,5 @@
 const Produtos = {
-	
+
 	codProduto: 0,
 
 	setPaths: () => {
@@ -9,13 +9,15 @@ const Produtos = {
 
 
 	init: async () => {
-		await Produtos.setPaths();
-		await Produtos.initForm();
+		Produtos.setPaths();
+		Produtos.initForm();
+		Produtos.initFields();
+		Produtos.initList();
+		Produtos.getInit();
 	},
-	
-	
+
+
 	initForm: async () => {
-		
 		await $('#formProdutos').dialog({
 			buttons: [
 				{
@@ -32,10 +34,30 @@ const Produtos = {
 				}
 			]
 		});
-		
+	},
+
+
+	initFields: async () => {
 		await Fields.createFromFile(Produtos.pathFields, 'prod');
-		
-		await Produtos.getInit();
+	},
+
+
+	initList: () => {
+
+		let head = [
+			{ label: 'Cod',   orderBy: 'codigo' },
+			{ label: 'Nome',  orderBy: 'nome'   },
+			{ label: 'Preco', orderBy: 'preco', type: 'decimal', }
+		];
+
+		Table.create({
+			idDestiny:    'listaProdutos',
+			arrHead:      head,
+			onLineClick:  value => { Produtos.edit(value);   },
+			onOrderBy:    value => { Produtos.filter(value); },
+			onPagination: value => { Produtos.filter(value); },
+			onRegPerPage: value => { Produtos.filter(value); }
+		});
 	},
 
 
@@ -47,15 +69,15 @@ const Produtos = {
 		.then(ret => {});
 	},
 
-	
+
 	insert: () => {
 		Produtos.codProduto = 0;
-		
+
 		$('#formProdutos').reset();
-		
+
 		$('#formProdutos').dialog('open');
 	},
-	
+
 
 	edit: id => {
 		if(!id) return;
@@ -64,7 +86,7 @@ const Produtos = {
 			com: 'read',
 			codProduto: id
 		};
-		
+
 		$().getJSON(Produtos.pathAjax, params)
 		.then(ret => {
 			Produtos.codProduto = ret.produto.codigo;
@@ -81,7 +103,7 @@ const Produtos = {
 
 
 	save: codProduto => {
-	
+
 		let params = {
 			com:        'save',
 			codProduto: Produtos.codProduto,
@@ -110,11 +132,12 @@ const Produtos = {
 		})
 	},
 
-	
+
 	delete: id => {
 
+		//register id (int) or table html id (str)
 		let ids = (isNaN(id)) ? Table.getAllSel(id) : id;
-		
+
 		if(!ids.length) {
 			Warning.on('Nenhum código informado para exclusão');
 			return;
@@ -124,7 +147,7 @@ const Produtos = {
 			com: 'delete',
 			ids: ids
 		}
-		
+
 		$().getJSON(Produtos.pathAjax, params)
 
 		.then(ret => {
@@ -132,7 +155,7 @@ const Produtos = {
 				Warning.on('Itens excluidos: '+ ret.deleted.join(', '));
 				Produtos.list();
 			}
-			
+
 			if(ret.alert) {
 				let k;
 				for(k in ret.alert) {
@@ -143,60 +166,65 @@ const Produtos = {
 	},
 
 
-	list: () => {
-		
+	filter: () => {
+		let filter = {};
+
+		//PEDRINHA: Click no onRegPerPage não tá funcionando
+
+		Produtos.list({
+			listParams: Table.getInfo($('#listaProdutos')),
+			listFilter: filter
+		});
+	},
+
+
+	list: arrFilter => {
+
+		if(!arrFilter) arrFilter = {};
+
 		let params = {
-			com: 'list'
+			com: 'list',
+			listParams: arrFilter.listParams,
+			listFilter: arrFilter.listFilter
 		};
 
 		$().getJSON(Produtos.pathAjax, params)
 		.then(ret => {
-			Produtos.createList(ret.list, ret.info);
-		})
-	},
-	
-	
-	createList: (list, info) => {
-		
-		let head = [
-			{ label: 'Cod' },
-			{ label: 'Nome' },
-			{ label: 'Preco', type: 'decimal' },
-			{ label: '' }
-		];
-		
-		let goodVal = '';
-		let check = '';
-		let body = [];
-		list.forEach(item => {
-			
-			goodVal = (item.preco > 20) ? 'success' : '';
-			
-			check = '<label><input type="checkbox" value="'+ item.codigo +'"> '+ item.codigo +'</label>';
-			
-			body.push({
-				classes: [
-					'nonClickCol',
-					'',
-					goodVal
-				],
-				value: item.codigo,
-				cells: [
-					check,
-					item.nome,
-					item.preco
-				]
+
+			let goodVal = '';
+			let check   = '';
+			let body    = [];
+			let destiny = $('#listaProdutos');
+
+			Table.setInfo(destiny, ret.info);
+
+			ret.list.forEach(item => {
+
+				goodVal = (item.preco > 20) ? 'success' : '';
+
+				check = '<label><input type="checkbox" value="'+ item.codigo +'"> '+ item.codigo +'</label>';
+
+				body.push({
+					value: item.codigo,
+					cells: [
+						check,
+						item.nome,
+						item.preco
+					],
+					classes: [
+						'nonClickCol',
+						'',
+						goodVal
+					]
+				});
 			});
-		});
-		
-		
-		Table.create({
-			idDestiny: 'listaProdutos',
-			arrHead: head,
-			arrBody: body,
-			onLineClick: (value, elem) => {
-				Produtos.edit(value);
-			}
-		});
+
+			Table.updateBody(destiny, body);
+
+		})
+		.catch(err => {
+			console.log(err);
+			Warning.on('Erro', err);
+		})
 	}
 };

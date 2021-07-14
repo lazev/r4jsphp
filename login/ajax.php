@@ -6,6 +6,8 @@ require_once ROOT .'_vendor/r4/src/php/r4iniend.php';
 require_once ROOT .'login/login.class.php';
 $login = new Login;
 
+$db->connect(DBBASE, INDEXTABLE);
+
 switch($_REQUEST['com']) {
 case 'login':
 

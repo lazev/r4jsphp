@@ -1,32 +1,31 @@
 const Table = {
 
-	onOrderBy: {},
+	onOrderBy:    {},
 	onPagination: {},
 	onRegPerPage: {},
-	onLineClick: function(){},
+	onLineClick: null,
 
 	head: [],
 	body: [],
 	foot: [],
-	
+
 	create: function(opts){
 
 		if(!opts) opts = {};
 
 		Table.idDestiny   = opts.idDestiny;
-
 		Table.head        = opts.arrHead;
 		Table.body        = opts.arrBody;
 		Table.foot        = opts.arrFoot;
 		Table.onLineClick = opts.onLineClick;
-		
+
+		let arrInfo       = opts.arrInfo;
 		let onOrderBy     = opts.onOrderBy;
 		let onRegPerPage  = opts.onRegPerPage;
 		let onPagination  = opts.onPagination;
-		let classes       = [];
 
+		let classes       = [];
 		if(opts.classes) classes.push(opts.classes);
-		classes.push('R4');
 
 		let destiny = document.getElementById(Table.idDestiny);
 		let table   = document.createElement('table');
@@ -34,68 +33,224 @@ const Table = {
 		let head    = Table.createHead();
 		let foot    = Table.createFoot();
 
+		classes.push('R4');
 		table.setAttribute('class', classes.join(' '));
 
 		if(head) table.appendChild(head);
 		table.appendChild(body);
 		if(foot) table.appendChild(foot);
 
-		let aftertbl = document.createElement('div');
-		aftertbl.setAttribute('class', 'row clearfix');
+		destiny.innerHTML = '';
+		destiny.appendChild(table);
 
+		if(arrInfo)      Table.setInfo(destiny, arrInfo);
+		if(onOrderBy)    Table.onOrderBy[Table.idDestiny]    = onOrderBy;
+		if(onRegPerPage) Table.onRegPerPage[Table.idDestiny] = onRegPerPage;
 		if(onPagination) {
+			let aftertbl = document.createElement('div');
+			aftertbl.setAttribute('class', 'row clearfix');
+
 			Table.onPagination[Table.idDestiny] = onPagination;
 			let pgntn = Table.createPagination(destiny);
 			if(pgntn) aftertbl.appendChild(pgntn);
 
 			let rowspg = Table.createRegPerPage(destiny);
 			if(rowspg) aftertbl.appendChild(rowspg);
+
+			destiny.appendChild(aftertbl);
 		}
-
-		destiny.innerHTML = '';
-		destiny.appendChild(table);
-		destiny.appendChild(aftertbl);
-
-		if(onOrderBy) Table.onOrderBy[Table.idDestiny] = onOrderBy;
-
-		if(onRegPerPage) Table.onRegPerPage[Table.idDestiny] = onRegPerPage;
 	},
 
 
-	setInfo: function(elem, params) {
+	setInfo: function(elem, params, clicked) {
 
 		let destiny = elem[0] || elem;
 
-		let table = destiny.querySelector('table');
+		let info = Table.getInfo(destiny);
 
-		let orderBy = params.orderBy.trim();
+		if(params.orderBy)    {
+			info.orderBy = params.orderBy.trim();
+		}
+		if(params.nowPage)    info.nowPage    = params.nowPage;
+		if(params.regPerPage) info.regPerPage = params.regPerPage;
+		if(params.totalReg)   info.totalReg   = params.totalReg;
 
-		if(params.orderBy)    table.setAttribute('orderBy',    orderBy           );
-		if(params.nowPage)    table.setAttribute('nowPage',    params.nowPage    );
-		if(params.regPerPage) table.setAttribute('regPerPage', params.regPerPage );
-		if(params.totalReg)   table.setAttribute('totalReg',   params.totalReg   );
+		destiny.setAttribute('orderBy',    info.orderBy    );
+		destiny.setAttribute('nowPage',    info.nowPage    );
+		destiny.setAttribute('regPerPage', info.regPerPage );
+		destiny.setAttribute('totalReg',   info.totalReg   );
 
-		Table.updateOrderBy(table, orderBy);
-		Table.updatePagination(destiny, params.regPerPage, params.totalReg, params.nowPage);
-		Table.updateRegPerPage(destiny, params.regPerPage);
+		Table.updateOrderBy(destiny,    info.orderBy, clicked);
+		Table.updatePagination(destiny, info.regPerPage, info.totalReg, info.nowPage);
+		Table.updateRegPerPage(destiny, info.regPerPage);
 	},
 
 
 	getInfo: function(elem) {
 		let arr = [];
 		let destiny = elem[0] || elem;
-		let table = destiny.querySelector('table');
 
-		arr.orderBy  = table.getAttribute('orderBy')  || '';
-		arr.nowPage  = table.getAttribute('nowPage')  || 1;
-		arr.rowsPage = table.getAttribute('rowsPage') || 15;
-		arr.totalReg = table.getAttribute('totalReg') || 0;
+		arr.orderBy    = destiny.getAttribute('orderBy')    || '';
+		arr.nowPage    = destiny.getAttribute('nowPage')    || 1;
+		arr.regPerPage = destiny.getAttribute('regPerPage') || 15;
+		arr.totalReg   = destiny.getAttribute('totalReg')   || 0;
 
 		return arr;
 	},
 
 
-	updateOrderBy: function(table, orderBy){
+	createHead: function() {
+
+		if(!Table.head.length) return false;
+
+		let thead = document.createElement('thead');
+		let tr    = document.createElement('tr');
+		let th;
+
+		Table.head.forEach(function(cell){
+			th = document.createElement('th');
+			th.innerHTML = cell.label;
+
+			if(cell.orderBy) {
+				th.setAttribute('orderBy', cell.orderBy);
+				th.addEventListener('click', function(event) {
+					if(typeof Table.onOrderBy[Table.idDestiny] === 'function') {
+
+						let direction = '';
+
+						let arrow = this.querySelector('.R4OrderArrow');
+
+						if(arrow) direction = arrow.getAttribute('direction') || '';
+
+						let orderBy = this.getAttribute('orderBy') +' '+ direction;
+
+						let tblElem = document.getElementById(Table.idDestiny);
+
+						Table.setInfo(tblElem, { orderBy: orderBy }, true );
+
+						Table.onOrderBy[Table.idDestiny](this.getAttribute('orderBy') +' '+ direction);
+					}
+				});
+			}
+
+			tr.appendChild(th);
+		});
+
+		thead.appendChild(tr);
+		return thead;
+	},
+
+
+	createFoot: function() {
+
+		if(!Table.foot) return false;
+
+		if(!Table.foot.length) return false;
+
+		let tfoot = document.createElement('tfoot');
+		let tr    = document.createElement('tr');
+		let td;
+
+		Table.foot.forEach(function(cell){
+			td = document.createElement('td');
+			td.innerHTML = cell.label;
+			tr.appendChild(td);
+		});
+
+		tfoot.appendChild(tr);
+		return tfoot;
+	},
+
+
+	createBody: function() {
+		let tr;
+		let tbody = document.createElement('tbody');
+
+		if(!Table.body) return tbody;
+
+		if(!Table.body.length) return tbody;
+
+		Table.body.forEach(function(line){
+			tr = Table.createLine(line);
+			tbody.appendChild(tr);
+		});
+
+		return tbody;
+	},
+
+
+	createLine: function(line) {
+
+		let tr, td;
+
+		tr = document.createElement('tr');
+		tr.setAttribute('value', line.value);
+
+		if(typeof Table.onLineClick === 'function') {
+			tr.classList.add('clickable');
+			tr.addEventListener('click', (event, elem) => {
+				if(!event.target.classList.contains('nonClickCol')) {
+					Table.onLineClick(
+						event.target.parentNode.getAttribute('value'),
+						event.target.parentNode
+					);
+				}
+			});
+		}
+
+		line.cells.forEach(function(value, position){
+
+			if(Table.head[position].type == 'decimal') {
+				value = $().toEUNumber(value);
+			}
+
+			td = document.createElement('td');
+
+			td.innerHTML = value;
+
+			if(line.classes) {
+				if(line.classes[position]) td.setAttribute('class', line.classes[position]);
+			}
+
+			tr.appendChild(td);
+		});
+
+		return tr;
+	},
+
+
+	updateBody: function(elem, body) {
+		Table.clearBody(elem);
+		Table.appendBody(elem, body);
+	},
+
+
+	clearBody: function(elem) {
+		let destiny = elem[0] || elem;
+		let tbody = destiny.querySelector('table > tbody');
+		if(!tbody) return false;
+		tbody.innerHTML = '';
+	},
+
+
+	appendBody: function(elem, body) {
+
+		if(!body) return false;
+
+		let tr;
+		let destiny = elem[0] || elem;
+		let tbody = destiny.querySelector('table > tbody');
+
+		if(!tbody) return false;
+
+		body.forEach(function(line){
+			tr = Table.createLine(line);
+			tbody.appendChild(tr);
+		});
+	},
+
+
+	updateOrderBy: function(table, orderBy, clicked){
 
 		if(!orderBy) return;
 
@@ -108,6 +263,10 @@ const Table = {
 		} else {
 			icon    = '&#8595;';
 			asc     = 'desc';
+		}
+
+		if(clicked) {
+			icon = '<span class="spinning">&#8597;</span>';
 		}
 
 		let cleaner = table.querySelectorAll('thead > tr > th');
@@ -166,16 +325,17 @@ const Table = {
 		totalReg    = parseInt(totalReg);
 		nowPage     = parseInt(nowPage);
 
-		let lastreg = (nowPage + 1) * regPerPage;
+		let lastreg = (nowPage) * regPerPage;
 		let lastpg  = Math.ceil(totalReg/regPerPage)-1;
 
 		let pgntn = destiny.querySelector('.R4TablePgntn');
+		if(!pgntn) return;
 
 		let idDestiny = destiny.id;
 
 		let hasPgs = false;
 
-		if(nowPage <= 0) {
+		if(nowPage <= 1) {
 
 			pgntn.querySelector('.R4TablePageFirst').innerHTML = '&#x219E';
 			pgntn.querySelector('.R4TablePagePrev').innerHTML = '&#x21BC';
@@ -238,6 +398,9 @@ const Table = {
 					let gotopg = item.getAttribute('numPage');
 					item.addEventListener('click', function(){
 						if(typeof Table.onPagination[idDestiny] === 'function') {
+
+							Table.setInfo(destiny, { nowPage: gotopg } );
+
 							Table.onPagination[idDestiny](gotopg);
 						}
 					});
@@ -248,27 +411,6 @@ const Table = {
 
 
 	createRegPerPage: function(destiny) {
-/* -----
-SVG Icons - svgicons.sparkk.fr
------
-
-.svg-icon {
-  width: 1em;
-  height: 1em;
-}
-
-.svg-icon path,
-.svg-icon polygon,
-.svg-icon rect {
-  fill: #4691f6;
-}
-
-.svg-icon circle {
-  stroke: #4691f6;
-  stroke-width: 1;
-}
-*/
-
 		let li;
 		let ul = document.createElement('ul');
 
@@ -277,10 +419,16 @@ SVG Icons - svgicons.sparkk.fr
 		[10, 15, 25, 50, 100, 500].forEach(function(item){
 			li = document.createElement('li');
 			li.setAttribute('numRegs', item);
-			li.innerHTML = item + ' reg/<svg class="svg-icon" viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"><path d="M15.475,6.692l-4.084-4.083C11.32,2.538,11.223,2.5,11.125,2.5h-6c-0.413,0-0.75,0.337-0.75,0.75v13.5c0,0.412,0.337,0.75,0.75,0.75h9.75c0.412,0,0.75-0.338,0.75-0.75V6.94C15.609,6.839,15.554,6.771,15.475,6.692 M11.5,3.779l2.843,2.846H11.5V3.779z M14.875,16.75h-9.75V3.25h5.625V7c0,0.206,0.168,0.375,0.375,0.375h3.75V16.75z"></path></svg>';
+			li.innerHTML = item + ' reg/pag';
+			li.classList.add('clickable');
 
 			li.addEventListener('click', function(){
 				if(typeof Table.onRegPerPage[idDestiny] === 'function') {
+					Table.setInfo(
+						document.getElementById(Table.idDestiny),
+						{ regPerPage: item }
+					);
+
 					Table.onRegPerPage[idDestiny](item);
 				}
 			});
@@ -289,8 +437,8 @@ SVG Icons - svgicons.sparkk.fr
 		});
 
 		let btnSel = document.createElement('button');
-		btnSel.setAttribute('class', 'R4Buttons bgWhite grey');
-		btnSel.innerHTML = 'reg/<svg class="svg-icon" viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"><path d="M15.475,6.692l-4.084-4.083C11.32,2.538,11.223,2.5,11.125,2.5h-6c-0.413,0-0.75,0.337-0.75,0.75v13.5c0,0.412,0.337,0.75,0.75,0.75h9.75c0.412,0,0.75-0.338,0.75-0.75V6.94C15.609,6.839,15.554,6.771,15.475,6.692 M11.5,3.779l2.843,2.846H11.5V3.779z M14.875,16.75h-9.75V3.25h5.625V7c0,0.206,0.168,0.375,0.375,0.375h3.75V16.75z"></path></svg>';
+		btnSel.setAttribute('class', 'R4 bgWhite grey');
+		btnSel.innerHTML = 'reg/pag';
 		$(btnSel).pop({ html: ul });
 
 		let rcpt = document.createElement('div');
@@ -304,152 +452,9 @@ SVG Icons - svgicons.sparkk.fr
 	updateRegPerPage: function(destiny, numPage) {
 
 		let regbtn = destiny.querySelector('.R4TableRegPerPage > button');
+		if(!regbtn) return;
 
-		regbtn.innerHTML = numPage +' reg/<svg class="svg-icon" viewBox="0 0 20 20" width="32" height="32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"><path d="M15.475,6.692l-4.084-4.083C11.32,2.538,11.223,2.5,11.125,2.5h-6c-0.413,0-0.75,0.337-0.75,0.75v13.5c0,0.412,0.337,0.75,0.75,0.75h9.75c0.412,0,0.75-0.338,0.75-0.75V6.94C15.609,6.839,15.554,6.771,15.475,6.692 M11.5,3.779l2.843,2.846H11.5V3.779z M14.875,16.75h-9.75V3.25h5.625V7c0,0.206,0.168,0.375,0.375,0.375h3.75V16.75z"></path></svg>';
-
-	},
-
-
-	createHead: function() {
-
-		if(!Table.head.length) return false;
-
-		let thead = document.createElement('thead');
-		let tr    = document.createElement('tr');
-		let th;
-
-		Table.head.forEach(function(cell){
-			th = document.createElement('th');
-			th.innerHTML = cell.label;
-
-			if(cell.orderBy) {
-				th.setAttribute('orderBy', cell.orderBy);
-				th.addEventListener('click', function(event) {
-					if(typeof Table.onOrderBy[Table.idDestiny] === 'function') {
-
-						let direction = '';
-						let arrow = this.querySelector('.R4OrderArrow');
-
-						if(arrow) direction = arrow.getAttribute('direction') || '';
-
-						Table.onOrderBy[Table.idDestiny](this.getAttribute('orderBy') +' '+ direction);
-					}
-				});
-			}
-
-			tr.appendChild(th);
-		});
-
-		thead.appendChild(tr);
-		return thead;
-	},
-
-
-	createBody: function() {
-		let tr;
-		let tbody = document.createElement('tbody');
-
-		if(!Table.body) return tbody;
-
-		if(!Table.body.length) return tbody;
-
-		Table.body.forEach(function(line){
-			tr = Table.createLine(line);
-			tbody.appendChild(tr);
-		});
-
-		return tbody;
-	},
-
-
-	clearBody: function(elem) {
-		let destiny = elem[0] || elem;
-		let tbody = destiny.querySelector('table > tbody');
-		if(!tbody) return false;
-		tbody.innerHTML = '';
-	},
-
-
-	insertBody: function(elem) {
-		Table.clearBody(elem);
-		Table.appendBody(elem);
-	},
-
-
-	appendBody: function(elem) {
-
-		if(!Table.body.length) return false;
-
-		let tr;
-		let destiny = elem[0] || elem;
-		let tbody = destiny.querySelector('table > tbody');
-
-		if(!tbody) return false;
-
-		Table.body.forEach(function(line){
-			tr = Table.createLine(line);
-			tbody.appendChild(tr);
-		});
-	},
-
-
-	createLine: function(line) {
-
-		let tr, td;
-
-		tr = document.createElement('tr');
-		tr.setAttribute('value', line.value);
-
-		if(typeof Table.onLineClick === 'function') {
-			tr.addEventListener('click', (event, elem) => {
-				if(!event.target.classList.contains('nonClickCol')) {
-					Table.onLineClick(
-						event.target.parentNode.getAttribute('value'),
-						event.target.parentNode
-					);
-				}
-			});
-		}
-
-		line.cells.forEach(function(value, position){
-			
-			if(Table.head[position].type == 'decimal') {
-				value = $().toEUNumber(value);
-			}
-			
-			td = document.createElement('td');
-
-			td.innerHTML = value;
-
-			if(line.classes) {
-				if(line.classes[position]) td.setAttribute('class', line.classes[position]);
-			}
-
-			tr.appendChild(td);
-		});
-
-		return tr;
-	},
-
-
-	createFoot: function() {
-
-		if(!Table.foot) return false;
-
-		if(!Table.foot.length) return false;
-
-		let tfoot = document.createElement('tfoot');
-		let tr    = document.createElement('tr');
-		let td;
-
-		Table.foot.forEach(function(cell){
-			td = document.createElement('td');
-			td.innerHTML = cell.label;
-			tr.appendChild(td);
-		});
-
-		tfoot.appendChild(tr);
-		return tfoot;
+		regbtn.innerHTML = numPage +' reg/pag';
 	},
 
 

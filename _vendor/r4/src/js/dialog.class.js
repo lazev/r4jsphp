@@ -3,7 +3,7 @@ const Dialog = {
 	onOpenFuncs: {},
 	beforeCloseFuncs: {},
 	onCloseFuncs: {},
-
+	
 	create: function(opts) {
 		return new Promise((resolve, reject) => {
 
@@ -28,9 +28,9 @@ const Dialog = {
 
 			let over = document.createElement('div');
 			let modl = document.createElement('div');
-			let head = document.createElement('div');
-			let body = document.createElement('div');
-			let foot = document.createElement('div');
+			let head = document.createElement('header');
+			let body = document.createElement('section');
+			let foot = document.createElement('footer');
 
 			let cont, idElem;
 
@@ -60,9 +60,6 @@ const Dialog = {
 
 			over.classList.add('hidden');
 			over.classList.add('R4Overlay');
-			head.classList.add('R4DialogHeader');
-			body.classList.add('R4DialogBody');
-			foot.classList.add('R4DialogFooter');
 
 			modl.appendChild(head);
 			modl.appendChild(body);
@@ -78,7 +75,7 @@ const Dialog = {
 			if(ephemeral) over.setAttribute('ephemeral', 'true');
 
 			let closer = document.createElement('div');
-			closer.innerHTML = '<b>&#8592;</b>';
+			closer.innerHTML = '<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAQAAAAngNWGAAAAWklEQVR4Ac3RAQbAMAxG4Qd6pUJAy+xWu9qOsxlgQgq2AxT5AX0B+IgIa7XREWoED4UkI3AsZ06orJFUcYbCXj5uzmkOGSar02NUGgSm/sWpGh1cFIR2Oiv1A9VmLUcOOFMwAAAAAElFTkSuQmCC" alt="Back arrow">';
 			closer.style.float = 'left';
 			closer.setAttribute('target', idElem);
 			closer.classList.add('R4DialogCloser');
