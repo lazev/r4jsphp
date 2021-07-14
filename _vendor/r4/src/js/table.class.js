@@ -291,8 +291,6 @@ const Table = {
 
 	createPagination: function(destiny) {
 
-		let table = destiny.querySelector('table');
-
 		let first = document.createElement('div');
 		let prev  = document.createElement('div');
 		let pgntn = document.createElement('div');
@@ -442,7 +440,7 @@ const Table = {
 		$(btnSel).pop({ html: ul });
 
 		let rcpt = document.createElement('div');
-		rcpt.setAttribute('class', 'col-2 R4TableRegPerPage')
+		rcpt.setAttribute('class', 'col-2 R4TableRegPerPage');
 		rcpt.appendChild(btnSel);
 
 		return rcpt;

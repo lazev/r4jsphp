@@ -26,8 +26,6 @@ const Sbar = {
 		let onOpen    = opt.onOpen;
 
 		let elem;
-		let width;
-		let height;
 
 		elem = document.getElementById(idElem);
 

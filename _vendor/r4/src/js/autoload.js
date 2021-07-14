@@ -1,6 +1,6 @@
 let R4ALCounter = 0;
 let R4ALFiles   = [
-	'_vendor/r4/src/js/r4.class.js',
+	'_vendor/r4/src/js/main.class.js',
 	'_vendor/r4/src/js/dialog.class.js',
 	'_vendor/r4/src/js/effects.class.js',
 	'_vendor/r4/src/js/fields.class.js',

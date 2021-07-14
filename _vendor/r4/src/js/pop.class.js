@@ -14,13 +14,13 @@ const Pop = {
 					destiny: el,
 					classes: 'R4PopHint',
 					id: 'R4PopHint'+ $().uniqid()
-				})
-			})
+				});
+			});
 
 			el.addEventListener('mouseleave', function(){
 				Pop.destroyElem(popel);
-			})
-		})
+			});
+		});
 	},
 
 	
@@ -35,12 +35,9 @@ const Pop = {
 
 		if(destiny.getAttribute('R4PopTarget')) return false;
 
-		let title    = opts.title    || '';
 		let html     = opts.html     || '';
 		let classes  = [];
-		let style    = opts.style    || {};
 		let onOpen   = opts.onOpen   || function(){};
-		let buttons  = opts.buttons  || [];
 		let id       = opts.id       || destiny.id +'R4Pop';
 
 		if((!id) || (id == 'R4Pop')) {

@@ -32,7 +32,7 @@ const Fields = {
 
 		return new Promise((resolve, reject) => {
 
-			var id, item, elem, rcpt, wrap, label;
+			var item, elem, rcpt, label;
 
 			if(!prefix) prefix = '';
 
@@ -363,9 +363,9 @@ const Fields = {
 	
 	reset: function(elem) {
 		elem.reset();
-		elem.querySelectorAll('input').forEach(elem => { elem.dispatchEvent(new Event('blur')) });
-		elem.querySelectorAll('select').forEach(elem => { elem.dispatchEvent(new Event('blur')) });
-		elem.querySelectorAll('textarea').forEach(elem => { elem.dispatchEvent(new Event('blur')) });
+		elem.querySelectorAll('input').forEach(   elem => { elem.dispatchEvent(new Event('blur')); });
+		elem.querySelectorAll('select').forEach(  elem => { elem.dispatchEvent(new Event('blur')); });
+		elem.querySelectorAll('textarea').forEach(elem => { elem.dispatchEvent(new Event('blur')); });
 	}
 
 };
