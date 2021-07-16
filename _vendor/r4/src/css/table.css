@@ -19,3 +19,7 @@ table.R4 > thead > tr > th[orderBy] {
 table.R4 > tbody > tr > td.nonClickCol {
 	cursor: default;
 }
+
+table.R4 > tbody > tr:hover {
+	background: #f0e68c;
+}

@@ -1,4 +1,4 @@
-const Table = {
+var Table = {
 
 	onOrderBy:    {},
 	onPagination: {},
@@ -247,6 +247,7 @@ const Table = {
 			tr = Table.createLine(line);
 			tbody.appendChild(tr);
 		});
+		Effects.highlight(tbody);
 	},
 
 
@@ -316,6 +317,16 @@ const Table = {
 		return pgntn;
 	},
 
+	
+	createPgntnBtn: function(numPage, icon, colorClass, disabled) {
+		let btn = document.createElement('button');
+		btn.setAttribute('class',  'R4 bgWhite '+ colorClass +' ');
+		btn.setAttribute('numPage', numPage);
+		if(disabled) btn.setAttribute('disabled', 'true');
+		btn.innerHTML = icon;
+		return btn;
+	},
+	
 
 	updatePagination: function(destiny, regPerPage, totalReg, nowPage){
 
@@ -333,61 +344,40 @@ const Table = {
 
 		let hasPgs = false;
 
+		let lnkFirst, lnkPrev, lnkNext, lnkLast;
+		
 		if(nowPage <= 1) {
-
-			pgntn.querySelector('.R4TablePageFirst').innerHTML = '&#x219E';
-			pgntn.querySelector('.R4TablePagePrev').innerHTML = '&#x21BC';
-
+			lnkFirst = Table.createPgntnBtn(0, '&#x219E', 'light', true);
+			lnkPrev  = Table.createPgntnBtn(0, '&#x21BC', 'light', true);
 		} else {
-
-			let lnkFirst = document.createElement('button');
-			lnkFirst.setAttribute('class',  'R4 bgWhite primary flat');
-			lnkFirst.setAttribute('numPage', 0);
-			lnkFirst.innerHTML = '&#x219E';
-
-			let boxFirst = pgntn.querySelector('.R4TablePageFirst');
-			boxFirst.innerHTML = '';
-			boxFirst.appendChild(lnkFirst);
-
-			let lnkPrev = document.createElement('button');
-			lnkPrev.setAttribute('class',  'R4 bgWhite primary flat');
-			lnkPrev.setAttribute('numPage', nowPage-1);
-			lnkPrev.innerHTML = '&#x21BC';
-
-			let boxPrev = pgntn.querySelector('.R4TablePagePrev');
-			boxPrev.innerHTML = '';
-			boxPrev.appendChild(lnkPrev);
-
+			lnkFirst = Table.createPgntnBtn(0,         '&#x219E', 'primary', false);
+			lnkPrev  = Table.createPgntnBtn(nowPage-1, '&#x21BC', 'primary', false);
 			hasPgs = true;
 		}
-
+		
 		if(lastreg >= totalReg) {
-
-			pgntn.querySelector('.R4TablePageNext').innerHTML = '&#x21C0';
-			pgntn.querySelector('.R4TablePageLast').innerHTML = '&#x21A0';
-
+			lnkNext = Table.createPgntnBtn(0, '&#x21C0', 'light', true);
+			lnkLast = Table.createPgntnBtn(0, '&#x21A0', 'light', true);
 		} else {
-
-			let lnkNext = document.createElement('button');
-			lnkNext.setAttribute('class',  'R4 bgWhite primary flat');
-			lnkNext.setAttribute('numPage', nowPage+1);
-			lnkNext.innerHTML = '&#x21C0';
-
-			let boxNext = pgntn.querySelector('.R4TablePageNext');
-			boxNext.innerHTML = '';
-			boxNext.appendChild(lnkNext);
-
-			let lnkLast = document.createElement('button');
-			lnkLast.setAttribute('class',  'R4 bgWhite primary flat');
-			lnkLast.setAttribute('numPage', lastpg);
-			lnkLast.innerHTML = '&#x21A0';
-
-			let boxLast = pgntn.querySelector('.R4TablePageLast');
-			boxLast.innerHTML = '';
-			boxLast.appendChild(lnkLast);
-
+			lnkNext = Table.createPgntnBtn(nowPage+1, '&#x21C0', 'primary', false);
+			lnkLast = Table.createPgntnBtn(lastpg+1,  '&#x21A0', 'primary', false);
 			hasPgs = true;
 		}
+
+		let boxFirst = pgntn.querySelector('.R4TablePageFirst');
+		let boxPrev = pgntn.querySelector('.R4TablePagePrev');
+		let boxNext = pgntn.querySelector('.R4TablePageNext');
+		let boxLast = pgntn.querySelector('.R4TablePageLast');
+
+		boxFirst.innerHTML = '';
+		boxPrev.innerHTML  = '';
+		boxNext.innerHTML  = '';
+		boxLast.innerHTML  = '';
+
+		boxFirst.appendChild(lnkFirst);
+		boxPrev.appendChild(lnkPrev);
+		boxNext.appendChild(lnkNext);
+		boxLast.appendChild(lnkLast);
 
 		if(hasPgs) {
 			let lnks = pgntn.querySelectorAll('button');
@@ -414,7 +404,7 @@ const Table = {
 
 		let idDestiny = destiny.id;
 
-		[10, 15, 25, 50, 100, 500].forEach(function(item){
+		[2, 10, 15, 25, 50, 100, 500].forEach(function(item){
 			li = document.createElement('li');
 			li.setAttribute('numRegs', item);
 			li.innerHTML = item + ' reg/pag';

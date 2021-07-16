@@ -1,4 +1,4 @@
-const Warning = {
+var Warning = {
 
 	on: function(msg, obs, opts) {
 		if(!opts) opts = {};

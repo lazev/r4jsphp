@@ -21,14 +21,7 @@
 
 		<link rel="stylesheet" type="text/css" href="_vendor/r4/src/css/global.css" />
 		
-		<script defer src="_vendor/r4/src/js/dialog.class.js"></script>
-		<script defer src="_vendor/r4/src/js/effects.class.js"></script>
-		<script defer src="_vendor/r4/src/js/fields.class.js"></script>
-		<script defer src="_vendor/r4/src/js/pop.class.js"></script>
-		<script defer src="_vendor/r4/src/js/r4.class.js"></script>
-		<script defer src="_vendor/r4/src/js/sbar.class.js"></script>
-		<script defer src="_vendor/r4/src/js/table.class.js"></script>
-		<script defer src="_vendor/r4/src/js/warning.class.js"></script>
+		<script defer src="_vendor/r4/dist/r4.min.js"></script>
 		<!--/R4HEADER-->
 
 		<script defer src="login/login.class.js"></script>
@@ -40,10 +33,12 @@
 		</script>
 	</head>
 	<body>
-		<div class="container">
-
+		<!--R4HEADER-id2-->
+		<!--/R4TEMPLATE-->
+		<header>
 			<h1>Identificação</h1>
-
+		</header>
+		<main>
 			<form id="formLogin" class="panel onCenter col-8">
 				<div id="login_user">E-mail de acesso</div>
 				<div id="login_pass">Senha de acesso</div>
@@ -51,6 +46,10 @@
 				<div id="login_btn">Entrar</div>
 				<a href="newuser/" class="onRight">Criar uma conta</a>
 			</form>
-
+		</main>
+		<footer></footer>
 	</body>
+	<!--R4TEMPLATE-foot-->
+	<link rel="stylesheet" type="text/css" href="_vendor/r4/src/css/global.css" />
+		<!--/R4TEMPLATE-->
 </html>

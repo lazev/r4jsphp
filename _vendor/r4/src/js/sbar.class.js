@@ -1,4 +1,4 @@
-const Sbar = {
+var Sbar = {
 
 	touchEvents: {
 		right: {},

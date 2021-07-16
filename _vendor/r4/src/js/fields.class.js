@@ -1,4 +1,4 @@
-const Fields = {
+var Fields = {
 
 	createFromFile: function(source, fieldsPrefix) {
 		return new Promise((resolve, reject) => {

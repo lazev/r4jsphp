@@ -82,10 +82,20 @@ SVG Icons - svgicons.sparkk.fr
 	display: inline-block;
 }
 
-@keyframes spin-animation {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(359deg); }
+.highlight {
+	animation: highlight-bg 0.5s;
 }
+
+@keyframes spin-animation {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(359deg); }
+}
+
+@keyframes highlight-bg {
+	0% { background: #f0e68c; }
+	100% { background: transparent; }
+}
+
 
 * {
 	font-family: 'Lato', Helvetica, sans-serif;

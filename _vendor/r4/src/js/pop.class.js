@@ -1,4 +1,4 @@
-const Pop = {
+var Pop = {
 	openPops: {},
 	
 	/*

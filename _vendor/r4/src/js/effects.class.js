@@ -1,4 +1,4 @@
-const Effects = {
+var Effects = {
 
 	slideDown: function(elem, callback) {
 
@@ -69,6 +69,14 @@ const Effects = {
 				setTimeout(fade, 25);
 			}
 		})();
+	},
+
+
+	highlight: function(elem) {
+		elem.classList.add('highlight');
+		setTimeout(function(){
+			elem.classList.remove('highlight');
+		}, 500);
 	}
 
 };

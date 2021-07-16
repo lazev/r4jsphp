@@ -1,4 +1,4 @@
-const Dialog = {
+var Dialog = {
 
 	onOpenFuncs: {},
 	beforeCloseFuncs: {},
