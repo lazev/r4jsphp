@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html lang="pt-BR">
+	<head>
+		<base href="../">
+		<title>Identifique-se</title>
+		<script src="freeway.js.php"></script>
+		<!--R4TEMPLATE-head-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Language" content="pt-br">
+<meta name="Description" content="Contrat.io">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2196f3"/>
+
+<link rel="manifest" href="manifest.json">
+<link rel="shortcut icon" href="_assets/icons/favicon.ico">
+<link rel="apple-touch-icon" href="_assets/icons/icon-192x192.png">
+
+<link rel="stylesheet" type="text/css" href="_assets/r4/r4.min.css" />
+<script defer src="_assets/r4/r4.min.js"></script>
+		<!--/R4TEMPLATE-->
+	</head>
+	<body>
+		<!--R4TEMPLATE-loading-->
+<style>
+	.loadOverlay {
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		background: lightgray;
+		color: black;
+		text-align: center;
+		padding: 200px 0;
+		z-index: 9999;
+		font-family: monospace;
+		font-size: 11px
+	}
+</style>
+<div class="loadOverlay hidden">
+	&#8635; Carregando...
+</div>
+		<!--/R4TEMPLATE-->
+		<header>
+			<h1>Identificação</h1>
+		</header>
+		<main>
+			<form id="formLogin" class="panel onCenter col-8">
+				<div id="login_user">E-mail de acesso</div>
+				<div id="login_pass">Senha de acesso</div>
+				<div id="login_save">Salvar dados de acesso</div>
+				<div id="login_btn">Entrar</div>
+				<a href="newuser/" class="onRight">Criar uma conta</a>
+			</form>
+		</main>
+		<footer>
+			R4 Framework
+		</footer>
+		
+		<script defer src="login/login.class.js"></script>
+		<script>
+			const R4Init = () => {
+				Login.start();
+			}
+		</script>
+		<!--R4TEMPLATE-endBody-->
+	</body>
+</html>

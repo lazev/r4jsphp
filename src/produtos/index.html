@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="pt-BR">
+	<head>
+		<base href="../">
+		<title>Produtos</title>
+		<script src="gatekeeper.js.php"></script>
+		<!--R4TEMPLATE-head-->
+	</head>
+	<body>
+		<!--R4TEMPLATE-loading-->
+		
+		<header>
+			<nav class="onRight">
+				<button onclick="Produtos.insert()" class="R4 bgSuccess white bold"> + </button>
+				<button onclick="Produtos.delete('listaProdutos')" class="R4 bgDanger white bold"> x </button>
+			</nav>
+			<h2>
+				Produtos
+			</h2>
+		</header>
+		<main>
+			<div id="listaProdutos">
+
+			</div>
+		</main>
+		<footer>
+			R4 Framework
+		</footer>
+		
+		<!-- hidden elems -->
+		<form id="formProdutos" fieldsPrefix="prod" title="Cadastro de produtos" class="hidden">
+			<div class="row">
+				<div class="col-12" id="prod_nome">Nome do produto</div>
+				<div class="col-6" id="prod_categoria">Categoria</div>
+				<div class="col-6" id="prod_preco">Preco de venda</div>
+				<div class="col-12" id="prod_tags">Tags</div>
+				<div class="col-12" id="prod_comEstoque">Controlar estoque</div>
+			</div>
+		</form>
+
+		<link rel="stylesheet" type="text/css" href="produtos/style.css" />
+		<script defer src="produtos/produtos.class.js"></script>
+		<script>
+			const R4Init = async () => {
+				await Produtos.init()
+				Produtos.list();
+			}
+		</script>
+		
+		<!--R4TEMPLATE-endBody-->
+	</body>
+</html>

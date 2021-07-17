@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="pt-BR">
+	<head>
+		<base href=".">
+		<title>Inicio</title>
+		<script src="freeway.js.php"></script>
+		<!--R4TEMPLATE-head-->
+	</head>
+	<body>
+		<!--R4TEMPLATE-loading-->
+		<header>
+			<h1>Sistema Lerio</h1>
+		</header>
+		<main>
+			<p>
+				<a href="signup/">Cadastre-se</a>
+			</p>
+			<p>
+				<a href="login/">Identifique-se</a>
+			</p>
+
+			<div id="menu" class="bgSuccess white" style="width: 80%; height: 100%;">
+				Menu lateral
+			</div>
+			<div id="cardapio" class="bgFancy" style="width: 80%; height: 90%;">
+				Menu superior
+			</div>
+		</main>
+		<footer>
+			R4 Framework
+		</footer>
+		
+		<script>
+			const R4Init = () => {
+				Sbar.create({id:'menu', direction:'left'});
+				Sbar.create({id:'cardapio', direction:'down', onOpen:function(){ Warning.on('Cardapio aberto') }, parent:document.getElementById('menu') });
+				//$().getJSON('manifest.json')
+				//.then(ret => console.log(ret));
+			}
+		</script>
+		<!--R4TEMPLATE-endBody-->
+	</body>
+</html>
