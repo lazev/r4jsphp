@@ -324,16 +324,33 @@ $.methods = {
 
 	click: function(cb) {
 		this.each(el => {
-			el.addEventListener('click', cb);
+			if(arguments.length === 0) {
+				let event = new Event('click');
+				el.dispatchEvent(event);
+			} else {
+				el.addEventListener('click', cb);
+			}
 		});
 	},
 
 	submit: function(cb) {
 		this.each(el => {
-			el.addEventListener('submit', cb);
+			if(arguments.length === 0) {
+				let event = new Event('submit');
+				el.dispatchEvent(event);
+			} else {
+				el.addEventListener('submit', cb);
+			}
 		});
 	},
 
+	trigger: function(ev) {
+		let event = new Event(ev);
+		this.each(el => {
+			el.dispatchEvent(event);
+		});
+	},
+	
 	append: function(content) {
 		if (typeof content === 'string') {
 			this.each(el => (el.insertAdjacentHTML('beforeend', content)));

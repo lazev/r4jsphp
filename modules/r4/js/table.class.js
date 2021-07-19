@@ -414,7 +414,7 @@ var Table = {
 				if(typeof Table.onRegPerPage[idDestiny] === 'function') {
 					Table.setInfo(
 						document.getElementById(Table.idDestiny),
-						{ regPerPage: item }
+						{ regPerPage: item, nowPage: 1 }
 					);
 
 					Table.onRegPerPage[idDestiny](item);

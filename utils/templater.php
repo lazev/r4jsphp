@@ -53,7 +53,7 @@ function replacer($filename, $version, $head) {
 
 		file_put_contents($filename, $filecont);
 		
-		writeln($filename .': '. $version);
+		//writeln($filename .': '. $version);
 	}
 }
 

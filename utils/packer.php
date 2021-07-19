@@ -7,8 +7,7 @@ require './utils/JSPacker.class.php';
 
 //CSS R4
 $content = implode(PHP_EOL, getFilesContent('./modules/r4/css', ['css']));
-$content = removeCSSComments($content);
-$content = removeSpaces($content);
+$content = minimizeCSS($content);
 
 file_put_contents('./public/_assets/r4/r4.min.css', $content);
 
@@ -60,6 +59,27 @@ function getFilesContent($dir, $ext) {
 		}
 	}
 	return $allContent;
+}
+
+function minimizeCSS($input) {
+	// Remove comments
+	$output = preg_replace('#/\*.*?\*/#s', '', $input);
+	// Remove whitespace
+	$output = preg_replace('/\s*([{}|:;,])\s+/', '$1', $output);
+	// Remove trailing whitespace at the start
+	$output = preg_replace('/\s\s+(.*)/', '$1', $output);
+	// Remove unnecesairy ;'s
+	$output = str_replace(';}', '}', $output);
+	//Put imports at the begin
+	preg_match_all('|@import (.+?)\;|i', $output, $imports);
+	$import = $imports[0];
+	
+	if(count($import)) {
+		$output = preg_replace('|@import (.+?)\;|i', '', $output);
+		$output = implode('', $import) .' '. $output;
+	}
+	
+	return $output;
 }
 
 function removeSpaces($string){

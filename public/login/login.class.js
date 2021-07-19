@@ -7,36 +7,32 @@ const Login = {
 	},
 
 
-	start: function(callback) {
-		let self = this;
+	init: async function() {
+		Login.setPaths();
+		Login.initFields();
+	},
 
-		self.setPaths();
-
-		Fields.createFromFile(self.pathFields)
+	
+	initFields: async () => {
+		await Fields.createFromFile(Login.pathFields)
 		.then(() => {
 
 			$('#formLogin').on('submit', function(event){
 				event.preventDefault();
-				self.logar();
+								Login.logar();
 			});
-
-			if(typeof callback == 'function') {
-				callback();
-			}
 		});
 	},
-	
-	
-	logar: function(){
-		let self = this;
 
+
+	logar: function(){
 		let params = {
 			com: 'login',
 			user: $('#login_user').val(),
 			pass: $('#login_pass').val()
 		};
 
-		$().getJSON(self.pathAjax, params)
+		$().getJSON(Login.pathAjax, params)
 
 		.then(dados => {
 			if(dados.logged) {
@@ -47,8 +43,5 @@ const Login = {
 		.catch(dados => {
 			
 		});
-
 	}
-
-
 };

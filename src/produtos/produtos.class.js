@@ -198,8 +198,12 @@ const Produtos = {
 
 			Table.setInfo(destiny, ret.info);
 
+			if(!ret.list.length) {
+				Table.clearBody(destiny);
+				return;
+			}
+			
 			ret.list.forEach(item => {
-
 				goodVal = (item.preco > 20) ? 'success' : '';
 
 				check = '<label><input type="checkbox" value="'+ item.codigo +'"> '+ item.codigo +'</label>';
