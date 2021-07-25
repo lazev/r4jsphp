@@ -52,7 +52,9 @@ const Produtos = {
 
 		Table.create({
 			idDestiny:    'listaProdutos',
+			classes:      'striped',
 			arrHead:      head,
+			withCheck:    true,
 			onLineClick:  value => { Produtos.edit(value);   },
 			onOrderBy:    value => { Produtos.filter(value); },
 			onPagination: value => { Produtos.filter(value); },
@@ -194,7 +196,9 @@ const Produtos = {
 			let goodVal = '';
 			let check   = '';
 			let body    = [];
+			let foot    = [];
 			let destiny = $('#listaProdutos');
+			let vTotal  = 0.00;
 
 			Table.setInfo(destiny, ret.info);
 
@@ -206,12 +210,10 @@ const Produtos = {
 			ret.list.forEach(item => {
 				goodVal = (item.preco > 20) ? 'success' : '';
 
-				check = '<label><input type="checkbox" value="'+ item.codigo +'"> '+ item.codigo +'</label>';
-
 				body.push({
 					value: item.codigo,
 					cells: [
-						check,
+						item.codigo,
 						item.nome,
 						item.preco
 					],
@@ -221,9 +223,19 @@ const Produtos = {
 						goodVal
 					]
 				});
+
+				vTotal += parseFloat(item.preco);
 			});
 
-			Table.updateBody(destiny, body);
+			foot.push({
+				cells: [
+					'',
+					'TOTAL',
+					$().round(vTotal, 2)
+				]
+			});
+			
+			Table.updateContent(destiny, body, foot);
 
 		})
 		.catch(err => {

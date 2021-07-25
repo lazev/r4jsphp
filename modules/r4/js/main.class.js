@@ -11,7 +11,7 @@ $.methods = {
 	init: function() {
 			
 		$().listeners();
-
+		
 		if(typeof R4Init === 'function') R4Init();
 
 		//$().sWorker();

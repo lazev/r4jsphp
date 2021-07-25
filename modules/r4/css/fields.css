@@ -40,7 +40,7 @@
 .R4Fields:not(.switch) > input:focus ~ label,
 .R4Fields > textarea:focus ~ label,
 .R4Fields > select:focus ~ label,
-/*.R4Fields > input:-webkit-autofill ~ label, //bugou no firefox*/
+.R4Fields > input:-webkit-autofill ~ label,
 .R4Fields.withContent > label {
 	top: -20px;
 	font-size: 14px;

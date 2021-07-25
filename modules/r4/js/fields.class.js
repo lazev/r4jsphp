@@ -367,5 +367,4 @@ var Fields = {
 		elem.querySelectorAll('select').forEach(  elem => { elem.dispatchEvent(new Event('blur')); });
 		elem.querySelectorAll('textarea').forEach(elem => { elem.dispatchEvent(new Event('blur')); });
 	}
-
 };

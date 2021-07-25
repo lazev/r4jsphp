@@ -19,7 +19,7 @@ const Login = {
 
 			$('#formLogin').on('submit', function(event){
 				event.preventDefault();
-								Login.logar();
+				Login.logar();
 			});
 		});
 	},
