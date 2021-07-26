@@ -5,8 +5,12 @@ chdir(dirname(__FILE__) .'/../');
 require './utils/JSPacker.class.php';
 
 
-//CSS R4
+//R4 CSS
 $content = implode(PHP_EOL, getFilesContent('./modules/r4/css', ['css']));
+
+//Project CSS
+$content .= PHP_EOL . implode(PHP_EOL, getFilesContent('./src/_assets/css/global', ['css']));
+
 $content = minimizeCSS($content);
 
 file_put_contents('./public/_assets/r4/r4.min.css', $content);
@@ -73,12 +77,12 @@ function minimizeCSS($input) {
 	//Put imports at the begin
 	preg_match_all('|@import (.+?)\;|i', $output, $imports);
 	$import = $imports[0];
-	
+
 	if(count($import)) {
 		$output = preg_replace('|@import (.+?)\;|i', '', $output);
 		$output = implode('', $import) .' '. $output;
 	}
-	
+
 	return $output;
 }
 
@@ -93,4 +97,3 @@ function removeCSSComments($css){
 	$file = preg_replace("/(\/\*[\w\'\s\r\n\*\+\,\"\-\.]*\*\/)/", "", $css);
 	return $file;
 }
-

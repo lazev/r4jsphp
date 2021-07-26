@@ -2,20 +2,22 @@ const Inicio = {
 
 	userNome: '',
 	setNomePop: null,
-	
-	setPaths: function() {
+
+	setPaths: () => {
 		Inicio.pathAjax   = _CONFIG.rootURL +'inicio/ajax.php';
 		Inicio.pathFields = _CONFIG.rootURL +'inicio/fields.json';
 	},
 
 
-	iniciar: function(){
+	init: () => {
 		Inicio.setPaths();
 		Inicio.getInit();
+		Inicio.initForm();
+		Inicio.initFields();
 	},
-	
 
-	getInit: function(){
+
+	getInit: () => {
 		let params = {
 			com: 'getInit'
 		};
@@ -26,9 +28,43 @@ const Inicio = {
 			Inicio.setClickNovaConta();
 		});
 	},
-	
-	
-	setHTMLNome: function(nome) {
+
+
+	initForm: () => {
+		$('#formCriarConta').dialog({
+			onOpen: function(){
+				$('#inicioNomeConta').val('');
+			},
+			buttons: [
+				{
+					label:   'Criar nova conta',
+					classes: 'bgSuccess',
+					onClick: function(){
+						Inicio.salvarConta();
+					}
+				},
+				{
+					label:   'Voltar',
+					classes: 'R4DialogCloser bgDanger'
+				}
+			]
+		});
+	},
+
+
+	initFields: () => {
+		Fields.create([
+			{ id: 'inicioNomeConta', type: 'string', maxSize: 200 }
+		]);
+	},
+
+
+	abrirFormCriarConta: () => {
+		$('#formCriarConta').dialog('open');
+	},
+
+
+	setHTMLNome: nome => {
 
 		if(nome) {
 			$('.labelUserNome').html(nome);
@@ -43,9 +79,9 @@ const Inicio = {
 						{ id:'inputUserNome', type:'string' },
 						{ id:'btnUserNome',   type:'button', classes:'bgSuccess' }
 					]);
-					
+
 					$('#inputUserNome').focus();
-					
+
 					$('#btnUserNome').click(function(){
 						let nome = $('#inputUserNome').val();
 						if(nome) {
@@ -61,9 +97,9 @@ const Inicio = {
 	},
 
 
-	salvarNome: function(nome){
+	salvarNome: nome => {
 		if(!nome) return;
-		
+
 		let params = {
 			com: 'salvarNome',
 			val: nome
@@ -73,62 +109,32 @@ const Inicio = {
 			Inicio.setHTMLNome(ret.dados.userNome);
 		})
 	},
-	
-	
-	setListaContas: function(dados) {
+
+
+	setListaContas: dados => {
 		for(let k in dados) {
 			Inicio.addHTMLConta(dados[k]);
 		}
 	},
 
 
-	setClickNovaConta: function(){
-		$('#boxCriarConta').click(function(){
-			$('#formCriarConta').dialog({
-				onCreate: function(){
-					Fields.create([
-						{ id: 'inicioNomeConta', type: 'string', maxSize: 200 }
-					]);
-				},
-				onOpen: function(){
-					$('#inicioNomeConta').val('');
-				},
-				buttons: [
-					{
-						label:   'Criar nova conta',
-						classes: 'bgSuccess',
-						onClick: function(){
-							Inicio.salvarConta();
-						}
-					},
-					{
-						label:   'Voltar',
-						classes: 'R4DialogCloser bgDanger'
-					}
-				]
-			});
-			//$('#formCriarConta').dialog('open');
-		});
-	},
-
-
-	salvarConta: function(){
+	salvarConta: () => {
 
 		let params = {
 			com: 'salvarConta',
 			nome: $('#inicioNomeConta').val()
 		};
-		
+
 		$().getJSON(Inicio.pathAjax, params)
 		.then(ret => {
 			Inicio.addHTMLConta(ret.dados);
 			Dialog.close('formCriarConta');
 		});
 	},
-	
-	
-	addHTMLConta:  function(dados){
-	
+
+
+	addHTMLConta:  dados => {
+
 		let t = ''
 			+ '<div class="linhaConta" cod="'+ dados.codigo +'">'
 			+ '<div>'+ dados.codigo                 +'</div>'
@@ -139,7 +145,7 @@ const Inicio = {
 		$('#boxContas').append(t);
 
 		$('.linhaConta[cod="'+ dados.codigo +'"]').click(function(event) {
-			
+
 			let params = {
 				com: 'selConta',
 				cod: $(this).attr('cod')
@@ -147,10 +153,9 @@ const Inicio = {
 
 			$().getJSON(Inicio.pathAjax, params)
 			.then(ret => {
-				window.location = 'produtos/';
+				window.location = _CONFIG.rootURL +'produtos/';
 			});
 		});
-
 	}
 
 };

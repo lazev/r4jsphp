@@ -68,11 +68,11 @@ switch($_REQUEST['com']) {
 
 		break;
 
-		
+
 	case 'delete':
 
 		$ids = $_REQUEST['ids'];
-		
+
 		$dados = $produtos->delete($ids);
 
 		if($dados === false) {
@@ -85,11 +85,10 @@ switch($_REQUEST['com']) {
 		]);
 
 		break;
-		
+
 
 	default:
-		R4::dieAPI(0, 'Nenhum comando valido informado');
+		R4::dieAPI(0, 'Nenhum comando válido informado');
 }
-
 
 require R4PHP .'r4iniend.php';

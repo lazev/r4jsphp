@@ -136,7 +136,7 @@ class DB {
 						$value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
 						$value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/u', '', $value);
 						$value = str_replace('\0', '/0', $value);
-						$values[] = (!get_magic_quotes_gpc()) ? addslashes($value) : $value;
+						$values[] = addslashes($value);
 					}
 				}
 			}

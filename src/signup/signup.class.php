@@ -6,7 +6,7 @@ class SignUp {
 	public $errObs = '';
 
 
-	public function validaCad($params=[]) {
+	public function valid($params=[]) {
 		global $db;
 
 		$user  = $params['user'];
@@ -31,7 +31,7 @@ class SignUp {
 			limit 1
 		");
 
-		if($veri['codigo']) {
+		if($veri && $veri['codigo']) {
 			$this->errMsg = 'Usuário já cadastrado';
 			$this->errObs = 'O e-mail informado já está em uso';
 			$this->errCod = 10;
@@ -42,14 +42,14 @@ class SignUp {
 	}
 
 
-	public function cadastrar($params=[]) {
+	public function save($params=[]) {
 		global $db;
 
 		$user  = $params['user'];
 		$pass  = $params['pass'];
 		$pass2 = $params['pass2'];
 
-		if(!$this->validaCad($params)) {
+		if(!$this->valid($params)) {
 			return false;
 		}
 

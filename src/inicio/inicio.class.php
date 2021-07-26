@@ -1,27 +1,27 @@
 <?php
 
 class Inicio {
-	
+
 	public $errMsg = '';
 	public $errObs = '';
-	
+
 	public function salvarNome($userCod, $nome) {
 		global $db;
-		
+
 		$userCod = (int)$userCod;
-		
+
 		if(!$userCod){
 			$this->errMsg = 'Código não informado';
 			$this->errObs = 'Não foi possível identificar o código do cadastro';
 			return false;
 		}
-		
+
 		if(!$nome){
 			$this->errMsg = 'Nome em branco';
 			$this->errObs = 'O nome não pode ficar em branco';
 			return false;
 		}
-		
+
 		$db->sql("
 			update `usuarios`
 			set nome='$nome'
@@ -35,32 +35,32 @@ class Inicio {
 			where codigo='$userCod'
 			limit 1
 		");
-		
+
 		return $pega;
 	}
-	
-	
+
+
 	public function listarContas($codUser) {
 		global $db;
 
 		$codUser  = (int)$codUser;
-		
+
 		$ret = $db->sql("
 			select *
 			from `contas`
 			where codUser='$codUser'
 		");
-		
+
 		return $ret;
 	}
-	
-	
+
+
 	public function selConta($codUser, $codConta) {
 		global $db;
-		
+
 		$codUser  = (int)$codUser;
 		$codConta = (int)$codConta;
-		
+
 		$ret = $db->sql("
 			select codigo
 			from `contas`
@@ -74,21 +74,21 @@ class Inicio {
 			$this->errObs = 'Não há nenhuma conta de código '. $codConta .' para seu usuário';
 			return false;
 		}
-		
+
 		$check = $db->connect(null, 'la_'. $codConta);
 		if($check === false) {
 			$this->errMsg = 'Erro ao selecionar a base da conta';
 			$this->errObs = 'A base da conta informada não foi encontrada';
 			return false;
 		}
-		
+
 		return $ret['codigo'];
 	}
-	
-	
+
+
 	public function salvarConta($userCod, $contaNome='') {
 		global $db;
-		
+
 		if(!(int)$userCod){
 			$this->errMsg = 'Código não informado';
 			$this->errObs = 'Não foi possível identificar o código do usuário';
@@ -114,71 +114,60 @@ class Inicio {
 
 		$check = $this->createDB($codConta);
 		if($check === false) return false;
-		
-		$db->connect(null, '_lazev');
+
+		$db->connect(null, '_sistema');
 
 		if(empty($pega['nome'])) {
-			
+
 			$nome = 'Conta id #'. $codConta;
-			
+
 			$db->sql("
 				update `usuarios`
 				set nome='$nome'
 				where codigo='$codConta'
 				limit 1
 			");
-			
+
 			$pega['nome'] = $nome;
 		}
-		
+
 		return $pega;
 	}
-	
-	
+
+
 	private function createDB($cod) {
 		global $db;
-		
+
 		$cod = (int)$cod;
 		if(!$cod) {
 			$this->errMsg = 'Cód da conta não informado';
 			$this->errObs = 'Não foi possível criar a conta';
 			return false;
 		}
-		
+
 		$db->sql("create database `la_". $cod ."` collate 'utf8mb4_general_ci';");
-		
+
 		if(!$db->connect(null, 'la_'. $cod)) {
 			$this->errMsg = 'Erro ao criar a conta';
 			$this->errObs = $db->errCod .' - '. $db->errMsg;
 			return false;
 		}
-		
+
 		$db->sql("
-			CREATE TABLE `chat` (
-				`codigo` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
-				`codUser` INT(1) UNSIGNED NOT NULL,
-				`canal` VARCHAR(20) NOT NULL,
-				`msg` VARCHAR(9999) NOT NULL,
-				`dtCad` DATETIME NOT NULL,
-				`ativo` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
+			CREATE TABLE `produtos` (
+				`codigo` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
+				`categoria` varchar(50) NOT NULL,
+				`nome` varchar(100) NOT NULL,
+				`preco` decimal(10,2) UNSIGNED NOT NULL,
+				`comEstoque` tinyint(1) NOT NULL DEFAULT '1',
+				`tags` varchar(200) NOT NULL,
+				`dtCad` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				`dtDel` datetime DEFAULT NULL,
+				`ativo` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
 				PRIMARY KEY (`codigo`)
-			)
-			ENGINE = InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 		");
-		
-		$db->sql("
-			CREATE TABLE `users` (
-				`codigo` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
-				`nome` VARCHAR(100) NOT NULL,
-				`apelido` VARCHAR(50) NOT NULL,
-				`dtCad` DATETIME NOT NULL,
-				`acesso` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
-				`ativo` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
-				PRIMARY KEY (`codigo`)
-			)
-			ENGINE = InnoDB;
-		");
-		
+
 		R4::setSession('SELTABLE', 'la_'. $cod);
 	}
 }

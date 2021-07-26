@@ -14,7 +14,7 @@ if(!defined('R4ALREADYINIT')) {
 
 } else {
 
-	if($db) {
+	if(isset($db)) {
 		$db->close();
 	}
 

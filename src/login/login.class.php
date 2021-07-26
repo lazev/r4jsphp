@@ -1,15 +1,15 @@
 <?php
 
 class Login {
-	
+
 	private $privateKey = 'f8§32kf£fgs89f{²1%a2f8§32kf£fgs89f{²1%a2';
 
 	public $errMsg = '';
 	public $errObs = '';
 
-	public function checkLogin($params) {
+	public function check($params) {
 		global $db;
-		
+
 		$user = $params['user'];
 		$pass = $params['pass'];
 
@@ -18,18 +18,16 @@ class Login {
 			$this->errObs = 'Informe seu e-mail';
 			return false;
 		}
-		
+
 		if(empty($pass)) {
 			$this->errMsg = 'Erro no login';
 			$this->errObs = 'Informe sua senha de acesso';
 			return false;
 		}
-		
-		//$db->setDebug(1);
-		
+
 		$dados = $db->sql("select * from `usuarios` where user='$user' limit 1");
-		
-		if(!$this->validPass($pass, $dados['pass'])) {
+
+		if(!$dados || !$this->validPass($pass, $dados['pass'])) {
 			$this->errMsg = 'Erro no login';
 			$this->errObs = 'Usuário ou senha inválidos';
 			return false;
@@ -40,16 +38,16 @@ class Login {
 			$this->errObs = 'O acesso a esta conta foi bloqueado';
 			return false;
 		}
-		
+
 		$this->setLoginOk($dados);
-		
+
 		return true;
 	}
 
-	
+
 	public function setLoginOk($params) {
 		global $db;
-		
+
 		if($params['codigo']) {
 			$db->sql("
 				update `usuarios`
@@ -58,15 +56,19 @@ class Login {
 				limit 1
 			");
 
+			if(!isset($params['codigo'])) return false;
+			if(!isset($params['user']))   return false;
+			if(!isset($params['nome']))   $params['nome'] = '';
+
 			R4::setSession('userLogged', 1);
-			R4::setSession('userCod',  $params['codigo']);
-			R4::setSession('userUser', $params['user']);
-			R4::setSession('userNome', $params['nome']);
-			
+			R4::setSession('userCod',    $params['codigo']);
+			R4::setSession('userUser',   $params['user']);
+			R4::setSession('userNome',   $params['nome']);
+
 			return true;
 		}
 	}
-	
+
 
 	public function criptPass($pass) {
 		return password_hash($this->privateKey . $pass . $this->privateKey, PASSWORD_DEFAULT);

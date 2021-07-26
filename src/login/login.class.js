@@ -1,31 +1,30 @@
 const Login = {
 
-	setPaths: function() {
-		let self = this;
-		self.pathAjax   = _CONFIG.rootURL +'login/ajax.php';
-		self.pathFields = _CONFIG.rootURL +'login/fields.json';
+	setPaths: () => {
+		Login.pathAjax   = _CONFIG.rootURL +'login/ajax.php';
+		Login.pathFields = _CONFIG.rootURL +'login/fields.json';
 	},
 
 
-	init: async function() {
+	init: async () => {
 		Login.setPaths();
 		Login.initFields();
 	},
 
-	
+
 	initFields: async () => {
 		await Fields.createFromFile(Login.pathFields)
 		.then(() => {
 
-			$('#formLogin').on('submit', function(event){
+			$('#formLogin').submit(event => {
 				event.preventDefault();
-				Login.logar();
+				Login.login();
 			});
 		});
 	},
 
 
-	logar: function(){
+	login: () => {
 		let params = {
 			com: 'login',
 			user: $('#login_user').val(),
@@ -41,7 +40,7 @@ const Login = {
 		})
 
 		.catch(dados => {
-			
+
 		});
 	}
 };

@@ -7,23 +7,25 @@ require ROOT .'signup/signup.class.php';
 $signUp = new SignUp;
 
 switch($_REQUEST['com']) {
-case 'salvar':
 
-	$ret = $signUp->cadastrar([
-		'user'  => $_REQUEST['user'],
-		'pass'  => $_REQUEST['pass'],
-		'pass2' => $_REQUEST['pass2']
-	]);
+	case 'save':
 
-	if($ret === false) {
-		R4::dieAPI($signUp->errCod, $signUp->errMsg, $signUp->errObs);
-	}
+		$ret = $signUp->save([
+			'user'  => $_REQUEST['user'],
+			'pass'  => $_REQUEST['pass'],
+			'pass2' => $_REQUEST['pass2']
+		]);
 
-	R4::retOkAPI($ret);
+		if($ret === false) {
+			R4::dieAPI($signUp->errCod, $signUp->errMsg, $signUp->errObs);
+		}
 
-break;
-default:
-	R4::dieAPI(0, 'Nenhum comando valido informado');
+		R4::retOkAPI($ret);
+
+	break;
+
+	default:
+		R4::dieAPI(0, 'Nenhum comando valido informado');
 }
 
 

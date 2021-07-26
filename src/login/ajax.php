@@ -9,9 +9,10 @@ $login = new Login;
 $db->connect(DBBASE, INDEXTABLE);
 
 switch($_REQUEST['com']) {
+
 case 'login':
 
-	$ret = $login->checkLogin([
+	$ret = $login->check([
 		'user' => $_REQUEST['user'],
 		'pass' => $_REQUEST['pass']
 	]);
@@ -29,9 +30,11 @@ case 'login':
 		'logged' => 1
 	]);
 
-break;
+	break;
+
+
 default:
-	R4::dieAPI(0, 'Nenhum comando valido informado');
+	R4::dieAPI(0, 'Nenhum comando válido informado');
 }
 
 require R4PHP .'r4iniend.php';

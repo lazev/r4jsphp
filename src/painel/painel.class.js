@@ -3,19 +3,19 @@ const Painel = {
 	userNome: '',
 	setNomePop: null,
 
-	setPaths: function() {
+	setPaths: () => {
 		Painel.pathAjax   = _CONFIG.rootURL +'painel/ajax.php';
 		Painel.pathFields = _CONFIG.rootURL +'painel/fields.json';
 	},
 
 
-	iniciar: function(){
+	init: () => {
 		Painel.setPaths();
 		Painel.getInit();
 	},
 
 
-	getInit: function(){
+	getInit: () => {
 		let params = {
 			com: 'getInit'
 		};

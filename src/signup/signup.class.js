@@ -1,45 +1,40 @@
 const SignUp = {
 
-	setPaths: function() {
-		let self = this;
-		self.pathAjax   = _CONFIG.rootURL +'signup/ajax.php';
-		self.pathFields = _CONFIG.rootURL +'signup/fields.json';
+	setPaths: () => {
+		SignUp.pathAjax   = _CONFIG.rootURL +'signup/ajax.php';
+		SignUp.pathFields = _CONFIG.rootURL +'signup/fields.json';
 	},
 
 
-	start: function(callback){
-		let self = this;
+	init: async () => {
+		SignUp.setPaths();
+		SignUp.initFields();
+	},
 
-		self.setPaths();
 
-		Fields.createFromFile(self.pathFields)
+	initFields: async () => {
+		await Fields.createFromFile(SignUp.pathFields)
 		.then(() => {
 
-			$('#formSignUp').submit(function(event){
+			$('#formSignUp').submit(event => {
 				event.preventDefault();
-				SignUp.salvar();
+				SignUp.save();
 			});
-
-			if(typeof callback == 'function') {
-				callback();
-			}
 		});
 	},
 
 
-	salvar: function() {
-		let self = this;
-
-		if(self.validar()) {
+	save: () => {
+		if(SignUp.valid()) {
 
 			let params = {
-				com:   'salvar',
+				com:   'save',
 				user:  $('#signUp_user').val(),
 				pass:  $('#signUp_pass').val(),
 				pass2: $('#signUp_pass2').val(),
 			};
 
-			$().getJSON(self.pathAjax, params)
+			$().getJSON(SignUp.pathAjax, params)
 			.then(dados => {
 				if(dados.ok) {
 					window.location = _CONFIG.rootURL +'inicio/';
@@ -54,7 +49,7 @@ const SignUp = {
 	},
 
 
-	validar: function() {
+	valid: () => {
 		return true;
 
 	}

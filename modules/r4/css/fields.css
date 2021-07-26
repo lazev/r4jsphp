@@ -13,7 +13,7 @@
 	border: none;
 	border-bottom: 1px solid #757575;
 	box-sizing: border-box;
-	background-color: #fafafa;
+	background-color: inherit;
 }
 
 .R4Fields:not(.switch) > input:focus,

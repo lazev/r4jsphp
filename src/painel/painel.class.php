@@ -115,7 +115,7 @@ class Painel {
 		$check = $this->createDB($codConta);
 		if($check === false) return false;
 
-		$db->connect(null, '_lazev');
+		$db->connect(null, '_sistema');
 
 		if(empty($pega['nome'])) {
 
