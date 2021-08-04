@@ -4,9 +4,10 @@
 	margin-bottom: 35px;
 }
 
-.R4Fields:not(.switch) > input,
+.R4Fields:not(.switch):not(.tags) > input,
 .R4Fields > textarea,
-.R4Fields > select {
+.R4Fields > select,
+.R4Fields.tags {
 	font-size: 18px;
 	padding: 10px 10px 10px 5px;
 	width: 100%;
@@ -16,7 +17,8 @@
 	background-color: inherit;
 }
 
-.R4Fields:not(.switch) > input:focus,
+
+.R4Fields:not(.switch):not(.tags) > input:focus,
 .R4Fields > textarea:focus,
 .R4Fields > select:focus {
 	outline: none;
@@ -54,6 +56,46 @@
 }
 
 
+/* TAGS ================================= */
+
+.R4Fields.tags {
+	display: flex;
+	padding: 0;
+	flex-wrap: wrap;
+}
+
+.R4Fields > .tagList > .tagItem {
+	padding: 5px 3px;
+	margin-right: 5px;
+	display: inline-block;
+
+}
+
+.R4Fields > .tagList > .tagItem > .closer {
+	cursor: pointer;
+	position: relative;
+	float: right;
+	top: -9px;
+	font-size: 13px;
+	font-weight: bold;
+	color: yellow;
+}
+
+.R4Fields.tags > input {
+	flex-grow: 1;
+	width: 20px;
+	font-size: 18px;
+	padding: 10px 10px 10px 5px;
+	border: none;
+	box-sizing: border-box;
+	background-color: inherit;
+}
+
+.R4Fields.tags > input:focus {
+	outline: none;
+}
+
+
 /* BOTTOM BARS ================================= */
 .R4Fields > .bar {
 	position: relative;
@@ -69,6 +111,10 @@
 	position: absolute;
 	background: #337ab7;
 	transition: 0.2s ease all;
+}
+.R4Fields.tags > .bar:before,
+.R4Fields.tags > .bar:after {
+	bottom: 0px;
 }
 .R4Fields > .bar:before {
 	left: 50%;

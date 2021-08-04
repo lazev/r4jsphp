@@ -52,15 +52,18 @@ var Fields = {
 				switch(item.type) {
 					case 'select':
 						elem = Fields.createSelect(item, prefix);
-					break;
+						break;
+
 					case 'switch':
 						elem = Fields.createSwitch(item, prefix);
-					break;
+						break;
+
 					case 'button':
 					case 'submit':
 					case 'reset':
 						elem = Fields.createButton(item, prefix);
-					break;
+						break;
+
 					default:
 						elem = Fields.createInput(item, prefix);
 				}
@@ -81,7 +84,7 @@ var Fields = {
 
 	createInput: function(item, prefix) {
 
-		let elem, type, label, passEye;
+		let elem, type, label, passEye, wrapClass, tagList;
 
 		let id   = (prefix)   ? prefix +'_'+ item.id : item.id;
 		let name = item.name || item.id;
@@ -98,9 +101,18 @@ var Fields = {
 			elem = document.createElement('textarea');
 		}
 		else {
+
 			elem = document.createElement('input');
 
 			switch(item.type) {
+				case 'tags':
+					wrapClass = 'tags';
+					tagList = document.createElement('span');
+					tagList.classList.add('tagList');
+					elem = Fields.TypeAhead.create(elem);
+
+					break;
+
 				case 'password':
 					type = item.type;
 					passEye = document.createElement('span');
@@ -113,6 +125,7 @@ var Fields = {
 						);
 					});
 					break;
+
 				case 'integer':
 				case 'integer-':
 					type = 'number';
@@ -120,13 +133,13 @@ var Fields = {
 					if(item.type == 'integer') {
 						if(item.min < 0) item.min = 0;
 					}
+					break;
 
-				break;
 				case 'money':
 				case 'decimal':
 					type = 'text';
-					
 					break;
+
 				default:
 					type = 'text';
 			}
@@ -157,23 +170,35 @@ var Fields = {
 
 		let wrap = document.createElement('div');
 		wrap.setAttribute('class', 'R4Fields');
+
+		if(tagList) wrap.appendChild(tagList);
+
 		wrap.appendChild(elem);
+
 		if(passEye) wrap.appendChild(passEye);
 
 		wrap.appendChild(bar);
 		if(label) wrap.appendChild(label);
 
+		if(wrapClass) {
+			wrap.classList.add(wrapClass);
+		}
+
 		if(attrib.value) {
 			wrap.classList.add('withContent');
 		}
 
-		elem.addEventListener('blur', function(event){
-			if(event.target.value) {
-				wrap.classList.add('withContent');
-			} else {
-				wrap.classList.remove('withContent');
-			}
-		});
+		if(item.type != 'tags') {
+			elem.addEventListener('blur', function(event){
+				if(event.target.value) {
+					wrap.classList.add('withContent');
+				} else {
+					wrap.classList.remove('withContent');
+				}
+			});
+		}
+
+
 
 		return wrap;
 	},
@@ -305,7 +330,7 @@ var Fields = {
 		if(item.classes) classes.push(item.classes);
 
 		attrib.class = classes.join(' ');
-		
+
 		if(checked) attrib.checked = true;
 
 		if(attr) {
@@ -327,8 +352,8 @@ var Fields = {
 
 		return wrap;
 	},
-	
-	
+
+
 	getVal: function(elem) {
 		if(typeof elem === 'undefined') {
 			console.warn('Undefined field');
@@ -342,8 +367,8 @@ var Fields = {
 			}
 		}
 	},
-	
-	
+
+
 	setVal: function(elem, value) {
 		let type = elem.getAttribute('R4Type');
 		switch(type) {
@@ -354,13 +379,13 @@ var Fields = {
 			case 'money':
 				elem.value = $().toEUNumber(value);
 				break;
-			default: 
+			default:
 				elem.value = value;
 		}
 		elem.dispatchEvent(new Event('blur'));
 	},
-	
-	
+
+
 	reset: function(elem) {
 		elem.reset();
 		elem.querySelectorAll('input').forEach(   elem => { elem.dispatchEvent(new Event('blur')); });

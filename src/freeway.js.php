@@ -2,7 +2,7 @@
 require_once 'config.inc.php';
 
 $arr = [
-	'rootURL' => HTTP .'://'. $_SERVER['SERVER_NAME'] .'/'
+	'rootURL' => ROOT_URL
 ];
 
 echo 'const _CONFIG = '. json_encode($arr);

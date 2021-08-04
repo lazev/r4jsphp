@@ -25,7 +25,6 @@ const Inicio = {
 		.then(ret => {
 			Inicio.setHTMLNome(ret.dados.userNome);
 			Inicio.setListaContas(ret.contas);
-			Inicio.setClickNovaConta();
 		});
 	},
 

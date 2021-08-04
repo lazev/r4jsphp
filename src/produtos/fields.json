@@ -4,6 +4,8 @@
 		{ "id": "categoria",  "type": "text"   },
 		{ "id": "preco",      "type": "money"  },
 		{ "id": "tags",       "type": "tags"   },
-		{ "id": "comEstoque", "type": "switch", "checked": true }
+		{ "id": "comEstoque", "type": "switch", "checked": true },
+		{ "id": "listanome",  "type": "text" },
+		{ "id": "listatags",  "type": "tags" }
 	]
 }

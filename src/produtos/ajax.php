@@ -52,8 +52,8 @@ switch($_REQUEST['com']) {
 
 	case 'list':
 
-		$listFilter = $_REQUEST['listFilter'];
-		$listParams = $_REQUEST['listParams'];
+		$listFilter = @$_REQUEST['listFilter'] ?: [];
+		$listParams = @$_REQUEST['listParams'] ?: [];
 
 		$dados = $produtos->list($listFilter, $listParams);
 
