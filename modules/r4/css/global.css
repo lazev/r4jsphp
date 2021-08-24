@@ -77,6 +77,13 @@ SVG Icons - svgicons.sparkk.fr
 	100% { background: transparent; }
 }
 
+.blink {
+	animation: blink 0.3s infinite;
+}
+
+@keyframes blink {
+	50% { opacity: 0.0; }
+}
 
 * {
 	font-family: 'Lato', Helvetica, sans-serif;

@@ -95,6 +95,25 @@
 	outline: none;
 }
 
+.R4Fields.tags > .typeAheadList {
+	position: absolute;
+	margin-top: 40px;
+	background: white;
+}
+
+.R4Fields.tags > .typeAheadList > ul {
+	list-style: none;
+	padding: 0;
+}
+
+.R4Fields.tags > .typeAheadList > ul > li {
+	border-bottom: 1px solid gray;
+	cursor: pointer;
+}
+
+.R4Fields.tags > .typeAheadList > ul > li.marked {
+	background-color: #F1F164;
+}
 
 /* BOTTOM BARS ================================= */
 .R4Fields > .bar {

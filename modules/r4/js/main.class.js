@@ -9,9 +9,9 @@ $.methods = {
 	//PURE FUNCTIONS
 
 	init: function() {
-			
+
 		$().listeners();
-		
+
 		if(typeof R4Init === 'function') R4Init();
 
 		//$().sWorker();
@@ -260,16 +260,16 @@ $.methods = {
 					el.innerHTML = txt;
 				}
 			}, 15);
-			
+
 		});
 	},
-	
+
 	reset: function() {
 		this.each(el => {
 			Fields.reset(el);
 		});
 	},
-	
+
 	html: function(t) {
 		if (arguments.length === 0) {
 			return this[0].innerHTML;
@@ -350,7 +350,7 @@ $.methods = {
 			el.dispatchEvent(event);
 		});
 	},
-	
+
 	append: function(content) {
 		if (typeof content === 'string') {
 			this.each(el => (el.insertAdjacentHTML('beforeend', content)));
@@ -382,6 +382,42 @@ $.methods = {
 		});
 	},
 
+
+	render: (templateElem, payload) => {
+
+		let content = templateElem.content.cloneNode(true);
+
+		if((typeof payload == 'object') && (payload.length) && (html.querySelector('[loop]'))) {
+
+			htmlElem = content.querySelector('[loop]');
+			htmlElem.removeAttribute('loop');
+
+		} else {
+
+			htmlElem = content;
+			payload = [payload];
+		}
+
+		let rendrow = '';
+		let final = '';
+
+		payload.forEach(row => {
+			rendrow = htmlElem;
+
+			for(var key in row) {
+				let val = row[key];
+
+				rendrow = rendrow.split('{{'+ key +'}}').join(val);
+			}
+
+			final += rendrow;
+		});
+
+		content = final;
+
+
+		return content;
+	},
 
 	//EFFECTS FUNCTION
 	slideUp: function(callback) {
@@ -423,9 +459,9 @@ $.methods = {
 	dialog: async function(opts) {
 
 		if(opts === 'close') {
-			
+
 			Dialog.close(this[0].getAttribute('id'));
-		
+
 		} else {
 
 			let open = false;
@@ -443,7 +479,7 @@ $.methods = {
 				let title = el.getAttribute('title');
 
 				if((title) && (!opts.title)) opts.title = title;
-				
+
 				if(open) {
 					Dialog.open(el.id);
 				} else {
@@ -466,8 +502,8 @@ $.methods = {
 	hint: function(txt) {
 		Pop.hint(this, txt);
 	},
-	
-	
+
+
 	//OTHERS
 	round: function(num, dec) {
 		if(!num) return 0;
@@ -482,7 +518,7 @@ $.methods = {
 		if(!isNaN(num)) return num;
 		else return 0.00;
 	},
-	
+
 	toEUNumber: function(num) {
 		if(isNaN(num)) {
 			console.warn('Not a number:', num);

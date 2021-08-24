@@ -6,6 +6,6 @@
 		{ "id": "tags",       "type": "tags"   },
 		{ "id": "comEstoque", "type": "switch", "checked": true },
 		{ "id": "listanome",  "type": "text" },
-		{ "id": "listatags",  "type": "tags" }
+		{ "id": "listatags",  "type": "tags", "typeahead":"json", "source":"Produtos.listaOpcoes" }
 	]
 }

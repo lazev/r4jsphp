@@ -2,6 +2,32 @@ const Produtos = {
 
 	codProduto: 0,
 
+	listaOpcoes: [
+		{ key: 14, label: 'Joe Gaston'  },
+		{ key: 17, label: 'Arpei Rept'  },
+		{ key: 1,  label: 'João Silva', extra: 'CPF: 012.031.152-51' },
+		{ key: 20, label: 'Peiter Casc' }
+	],
+
+
+	listaIBU: [
+		{ tipoBira: 'Standard American Lager',  IBU: '8-15'   },
+		{ tipoBira: 'GermanPilsen (Pils)',      IBU: '25-45'  },
+		{ tipoBira: 'Traditional Bock',         IBU: '20-27'  },
+		{ tipoBira: 'Standard EnglishPale Ale', IBU: '25-35'  },
+		{ tipoBira: 'IrishRed Ale',             IBU: '17-28'  },
+		{ tipoBira: 'American Pale Ale',        IBU: '30-45'  },
+		{ tipoBira: 'Brown Porter',             IBU: '18-35'  },
+		{ tipoBira: 'DryStout',                 IBU: '30-45'  },
+		{ tipoBira: 'English IPA',              IBU: '40-60'  },
+		{ tipoBira: 'American IPA',             IBU: '40-70'  },
+		{ tipoBira: 'Imperial IPA',             IBU: '60-120' },
+		{ tipoBira: 'Weissbier',                IBU: '8-15'   },
+		{ tipoBira: 'Witbier',                  IBU: '10-20'  },
+		{ tipoBira: 'FruitLambic',              IBU: '0-10'   }
+	],
+
+
 	setPaths: () => {
 		Produtos.pathAjax   = _CONFIG.rootURL +'produtos/ajax.php';
 		Produtos.pathFields = _CONFIG.rootURL +'produtos/fields.json';
@@ -14,6 +40,18 @@ const Produtos = {
 		Produtos.initFields();
 		Produtos.initList();
 		Produtos.getInit();
+
+
+		//Modelo de render
+		let infoElem = $().render($0('#tplProdutosInfoBox'), {
+			nomeCerveja: 'SKOL',
+			IBU: '-5'
+		});
+
+		//Modelo de render com lista
+		let tabelaElem = $().render($0('#tplProdutosListaIBU'), Produtos.listaIBU);
+		$0('#listaIBU').appendChild(tabelaElem);
+
 	},
 
 
@@ -206,7 +244,7 @@ const Produtos = {
 				Table.clearBody(destiny);
 				return;
 			}
-			
+
 			ret.list.forEach(item => {
 				goodVal = (item.preco > 20) ? 'success' : '';
 
@@ -234,7 +272,7 @@ const Produtos = {
 					$().round(vTotal, 2)
 				]
 			});
-			
+
 			Table.updateContent(destiny, body, foot);
 
 		})

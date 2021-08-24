@@ -89,8 +89,10 @@ var Fields = {
 		let id   = (prefix)   ? prefix +'_'+ item.id : item.id;
 		let name = item.name || item.id;
 
+		item.id = id;
+
 		let attrib = {
-			id:   id,
+			id: id,
 			name: name,
 			//required: 'required',
 			autocomplete: 'off',
@@ -99,9 +101,9 @@ var Fields = {
 
 		if(item.type == 'textarea') {
 			elem = document.createElement('textarea');
+
 		}
 		else {
-
 			elem = document.createElement('input');
 
 			switch(item.type) {
@@ -109,7 +111,10 @@ var Fields = {
 					wrapClass = 'tags';
 					tagList = document.createElement('span');
 					tagList.classList.add('tagList');
-					elem = Fields.TypeAhead.create(elem);
+
+					elem = FieldsTags.create(elem, item);
+
+
 
 					break;
 
@@ -188,7 +193,11 @@ var Fields = {
 			wrap.classList.add('withContent');
 		}
 
-		if(item.type != 'tags') {
+		if(item.type == 'tags') {
+			let typeAheadList = document.createElement('div');
+			typeAheadList.classList.add('typeAheadList');
+			wrap.appendChild(typeAheadList);
+		} else {
 			elem.addEventListener('blur', function(event){
 				if(event.target.value) {
 					wrap.classList.add('withContent');
@@ -197,8 +206,6 @@ var Fields = {
 				}
 			});
 		}
-
-
 
 		return wrap;
 	},
@@ -363,6 +370,7 @@ var Fields = {
 			switch(type) {
 				case 'switch': return (elem.checked) ? elem.value : 0;
 				case 'money':  return $().toUSNumber(elem.value);
+				case 'tags':   return FieldsTags.getVal(elem);
 				default:       return elem.value;
 			}
 		}
@@ -379,6 +387,9 @@ var Fields = {
 			case 'money':
 				elem.value = $().toEUNumber(value);
 				break;
+			case 'tags':
+				FieldsTags.setVal(elem, value);
+				break;
 			default:
 				elem.value = value;
 		}
@@ -391,5 +402,6 @@ var Fields = {
 		elem.querySelectorAll('input').forEach(   elem => { elem.dispatchEvent(new Event('blur')); });
 		elem.querySelectorAll('select').forEach(  elem => { elem.dispatchEvent(new Event('blur')); });
 		elem.querySelectorAll('textarea').forEach(elem => { elem.dispatchEvent(new Event('blur')); });
+		elem.querySelectorAll('input[R4Type=tags]').forEach(elem => { FieldsTags.clrTag(elem); });
 	}
 };
