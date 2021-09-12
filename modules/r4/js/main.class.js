@@ -385,17 +385,60 @@ $.methods = {
 
 	render: (templateElem, payload) => {
 
-		let content = templateElem.content.cloneNode(true);
+		let content;
+		let processed = '';
+		let elem = templateElem.content.cloneNode(true);
 
-		if((typeof payload == 'object') && (payload.length) && (html.querySelector('[loop]'))) {
-
-			htmlElem = content.querySelector('[loop]');
+		if((typeof payload == 'object') && (payload.length) && (elem.querySelector('[loop]'))) {
+			let htmlElem = elem.querySelector('[loop]');
 			htmlElem.removeAttribute('loop');
+			let crude = htmlElem.outerHTML;
+
+			payload.forEach(row => {
+				content = crude;
+
+				for(var key in row) {
+					content = content.split('{{'+ key +'}}').join(row[key]);
+				}
+
+				processed += content;
+			});
+
+			if(htmlElem.parentNode.nodeType == 11) { //11: Fragment-node
+				let retElem = document.createElement('div');
+				retElem.innerHTML = processed;
+				return retElem.childNodes;
+			} else {
+				htmlElem.parentNode.innerHTML = processed;
+				return elem;
+			}
 
 		} else {
 
-			htmlElem = content;
-			payload = [payload];
+			content = elem.firstElementChild.outerHTML;
+
+			for(var key in payload) {
+				content = content.split('{{'+ key +'}}').join(payload[key]);
+			}
+
+			let retElem = document.createElement('div');
+			retElem.innerHTML = content;
+
+			return retElem.firstChild;
+		}
+	},
+
+
+
+	render2: (templateElem, payload) => {
+
+		let html = templateElem.content.cloneNode(true);
+
+		if((typeof payload == 'object') && (payload.length) && (html.querySelector('[loop]'))) {
+
+			htmlElem = html.querySelector('[loop]');
+			htmlElem.removeAttribute('loop');
+
 		}
 
 		let rendrow = '';
@@ -413,10 +456,10 @@ $.methods = {
 			final += rendrow;
 		});
 
-		content = final;
+		html = final;
 
 
-		return content;
+		return html;
 	},
 
 	//EFFECTS FUNCTION

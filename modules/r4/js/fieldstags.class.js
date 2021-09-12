@@ -16,6 +16,7 @@ FieldsTags = {
 					let marked = listElem.querySelector('.marked');
 					if(marked) {
 						FieldsTags.addTag( elem, marked.querySelector('div').innerHTML );
+						elem.parentNode.querySelector('.typeAheadList').innerHTML = '';
 					}
 				}
 			}
@@ -226,7 +227,7 @@ FieldsTags = {
 
 
 	remTag: (elem, target) => {
-		target.remove();
+		if(target) target.remove();
 		FieldsTags.withContent(elem);
 	},
 

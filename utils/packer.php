@@ -4,6 +4,7 @@ chdir(dirname(__FILE__) .'/../');
 
 require './utils/JSPacker.class.php';
 
+$usePacker = false;
 
 //R4 CSS
 $content = implode(PHP_EOL, getFilesContent('./modules/r4/css', ['css']));
@@ -22,8 +23,12 @@ $content = getFilesContent('./modules/r4/js', ['js']);
 
 $result = '';
 foreach($content as $cont) {
-	$packer = new JavaScriptPacker($cont, 'Normal', true, false);
-	$result .= $packer->pack();
+	if($usePacker) {
+		$packer = new JavaScriptPacker($cont, 'Normal', true, false);
+		$result .= $packer->pack();
+	} else {
+		$result .= $cont;
+	}
 }
 
 file_put_contents('./public/_assets/r4/r4.min.js', $result);

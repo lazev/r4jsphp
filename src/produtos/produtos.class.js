@@ -11,20 +11,20 @@ const Produtos = {
 
 
 	listaIBU: [
-		{ tipoBira: 'Standard American Lager',  IBU: '8-15'   },
-		{ tipoBira: 'GermanPilsen (Pils)',      IBU: '25-45'  },
-		{ tipoBira: 'Traditional Bock',         IBU: '20-27'  },
-		{ tipoBira: 'Standard EnglishPale Ale', IBU: '25-35'  },
-		{ tipoBira: 'IrishRed Ale',             IBU: '17-28'  },
-		{ tipoBira: 'American Pale Ale',        IBU: '30-45'  },
-		{ tipoBira: 'Brown Porter',             IBU: '18-35'  },
-		{ tipoBira: 'DryStout',                 IBU: '30-45'  },
-		{ tipoBira: 'English IPA',              IBU: '40-60'  },
-		{ tipoBira: 'American IPA',             IBU: '40-70'  },
-		{ tipoBira: 'Imperial IPA',             IBU: '60-120' },
-		{ tipoBira: 'Weissbier',                IBU: '8-15'   },
-		{ tipoBira: 'Witbier',                  IBU: '10-20'  },
-		{ tipoBira: 'FruitLambic',              IBU: '0-10'   }
+		{ id: 1,   tipoBira: 'Standard American Lager',  IBU: '8-15'   },
+		{ id: 52,  tipoBira: 'GermanPilsen (Pils)',      IBU: '25-45'  },
+		{ id: 4,   tipoBira: 'Traditional Bock',         IBU: '20-27'  },
+		{ id: 119, tipoBira: 'Standard EnglishPale Ale', IBU: '25-35'  },
+		{ id: 2,   tipoBira: 'IrishRed Ale',             IBU: '17-28'  },
+		{ id: 25,  tipoBira: 'American Pale Ale',        IBU: '30-45'  },
+		{ id: 11,  tipoBira: 'Brown Porter',             IBU: '18-35'  },
+		{ id: 542, tipoBira: 'DryStout',                 IBU: '30-45'  },
+		{ id: 343, tipoBira: 'English IPA',              IBU: '40-60'  },
+		{ id: 32,  tipoBira: 'American IPA',             IBU: '40-70'  },
+		{ id: 19,  tipoBira: 'Imperial IPA',             IBU: '60-120' },
+		{ id: 81,  tipoBira: 'Weissbier',                IBU: '8-15'   },
+		{ id: 83,  tipoBira: 'Witbier',                  IBU: '10-20'  },
+		{ id: 476, tipoBira: 'FruitLambic',              IBU: '0-10'   }
 	],
 
 
@@ -43,15 +43,24 @@ const Produtos = {
 
 
 		//Modelo de render
+		//*
 		let infoElem = $().render($0('#tplProdutosInfoBox'), {
 			nomeCerveja: 'SKOL',
 			IBU: '-5'
 		});
 
-		//Modelo de render com lista
-		let tabelaElem = $().render($0('#tplProdutosListaIBU'), Produtos.listaIBU);
-		$0('#listaIBU').appendChild(tabelaElem);
+		$0('#infoBox').append(infoElem);
+		//*/
 
+		//Modelo de render com lista
+		//*
+		let tabelaElem = $().render($0('#tplProdutosListaIBU'), Produtos.listaIBU);
+		console.log(tabelaElem);
+		tabelaElem.forEach(item => {
+			console.log(item);
+			$0('#listaIBU').append(item);
+		});
+		//*/
 	},
 
 

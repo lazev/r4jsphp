@@ -114,8 +114,6 @@ var Fields = {
 
 					elem = FieldsTags.create(elem, item);
 
-
-
 					break;
 
 				case 'password':
