@@ -16,7 +16,7 @@ define('USER_IP',    ((isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 
 define('ROOT_URL',   HTTP . $_SERVER['HTTP_HOST'] .'/');
 
-define('ROOT',       '/var/www/html/');
+define('ROOT',       dirname('__FILE__');
 define('R4PHP',      ROOT .'_assets/r4/php/');
 
 define('SYSTEMID',   'lerio');
