@@ -1,1 +1,3 @@
-public
+public/
+modules/vendor/
+modules/composer.lock
