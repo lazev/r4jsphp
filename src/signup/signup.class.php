@@ -45,6 +45,9 @@ class SignUp {
 	public function save($params=[]) {
 		global $db;
 
+		require_once ROOT .'login/login.class.php';
+		$login = new Login;
+
 		$user  = $params['user'];
 		$pass  = $params['pass'];
 		$pass2 = $params['pass2'];
@@ -53,19 +56,13 @@ class SignUp {
 			return false;
 		}
 
-		$hora = $db->sql("select now() as 'agora' limit 1");
-
-		require_once '../login/login.class.php';
-		$login = new Login;
-
 		$cpass = $login->criptPass($pass);
 
 		$dados = [
 			'provider' => 'email',
 			'user'     => $user,
 			'pass'     => $cpass,
-			'emails'   => $user,
-			'dtCad'    => $hora['agora']
+			'emails'   => $user
 		];
 
 		$db->sql("insert into `usuarios`", $dados);
@@ -79,6 +76,35 @@ class SignUp {
 		return [
 			'cod'  => $cod,
 			'user' => $user
+		];
+
+	}
+
+
+	public function saveProvider($params=[]) {
+		global $db;
+
+		require_once ROOT .'login/login.class.php';
+		$login = new Login;
+
+		$dados = [
+			'provider'   => $params['provider'],
+			'providerId' => $params['providerId'],
+			'nome'       => $params['name'],
+			'emails'     => $params['emails'],
+			'picture'    => $params['picture']
+		];
+
+		$db->sql("insert into `usuarios`", $dados);
+
+		$cod = $db->getInsertId();
+
+		$dados['codigo'] = $cod;
+
+		$login->setLoginOk($dados);
+
+		return [
+			'cod'  => $cod
 		];
 
 	}

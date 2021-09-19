@@ -48,7 +48,9 @@ function compile() {
 	shell_exec('rm -rf ./public/*');
 	shell_exec('cp -r ./src/* ./public/');
 	shell_exec('mkdir ./public/_assets/r4');
+	shell_exec('mkdir ./public/_assets/vendor');
 	shell_exec('cp -r ./modules/r4/php ./public/_assets/r4/');
+	shell_exec('cp -r ./modules/vendor/* ./public/_assets/vendor/');
 //	shell_exec('chown -R www-data. ./public');
 	shell_exec('php utils/templater.php');
 	shell_exec('php utils/packer.php');

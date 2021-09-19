@@ -10,14 +10,31 @@ $db->connect(DBBASE, INDEXTABLE);
 
 switch($_REQUEST['com']) {
 
+case 'getInit':
+
+	require_once 'providers/facebook.php';
+	$fb = new Facebook;
+
+	require_once 'providers/google.php';
+	$gg = new Google;
+
+	R4::retOkAPI([
+		'logged'    => $login->checkKeepLogged(),
+		'fbAuthUrl' => $fb->getAuthorizationUrl(),
+		'ggAuthUrl' => $gg->getAuthorizationUrl()
+	]);
+
+	break;
+
+
 case 'login':
 
-	$ret = $login->check([
+	$userCod = $login->check([
 		'user' => $_REQUEST['user'],
 		'pass' => $_REQUEST['pass']
 	]);
 
-	if($ret === false) {
+	if($userCod === false) {
 		die(json_encode([
 			'error'  => 1,
 			'errMsg' => $login->errMsg,
@@ -25,8 +42,11 @@ case 'login':
 		]));
 	}
 
-	echo json_encode([
-		'ok'     => 1,
+	if(isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
+		$login->genKeepLogged($userCod);
+	}
+
+	R4::retOkAPI([
 		'logged' => 1
 	]);
 

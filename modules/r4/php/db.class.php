@@ -284,6 +284,9 @@ class DB {
 
 
 	private function errorMonitor($msg, $subject='...') {
+		if(defined(DEVMODE) && DEVMODE == true) {
+			echo PHP_EOL. $msg .PHP_EOL;
+		}
 		error_log(PHP_EOL. $msg .PHP_EOL);
 	}
 

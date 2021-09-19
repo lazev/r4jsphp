@@ -170,6 +170,30 @@ $.methods = {
 	},
 
 
+	getHashParams: function(hash) {
+		let ret = {};
+		let arr = [];
+		let tmp = [];
+
+		if(hash.substr(0, 1) == '#') hash = hash.substr(1);
+
+		if(hash.indexOf('=') < 1) return hash;
+
+		if(hash.indexOf('&') > -1) {
+			arr = hash.split('&');
+		} else {
+			arr.push(hash);
+		}
+
+		arr.forEach(item => {
+			tmp = item.split('=');
+			ret[decodeURI(tmp[0])] = decodeURI(tmp[1]);
+		});
+
+		return ret;
+	},
+
+
 	//JQUERY FUNCTIONS
 	each: function(func) {
 		Array.prototype.forEach.call(this, func);

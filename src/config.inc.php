@@ -17,10 +17,12 @@ define('USER_IP',    ((isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 define('ROOT_URL',   HTTP . $_SERVER['HTTP_HOST'] .'/');
 
 define('ROOT',       '/var/www/html/');
-define('R4PHP',      ROOT . '_assets/r4/php/');
+define('R4PHP',      ROOT .'_assets/r4/php/');
 
 define('SYSTEMID',   'lerio');
 define('DEVMODE',    true);
+
+define('SECRETKEY',  'As39Jsç2a²-aj12#%[8AZc a2!f"a57jh');
 
 define('DBBASE',     'db'        );
 define('DBUSER',     'sistema'   );
