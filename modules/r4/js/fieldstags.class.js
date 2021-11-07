@@ -37,8 +37,12 @@ FieldsTags = {
 		});
 
 		elem.addEventListener('blur', function(event){
-			FieldsTags.addTag(elem, elem.value);
-			FieldsTags.withContent(event.target);
+			setTimeout(() => {
+				//Small delay to run typeahead elem click before blur
+				FieldsTags.addTag(elem, elem.value);
+				FieldsTags.withContent(event.target);
+			}, 100);
+			
 		});
 
 		elem.addEventListener('paste', function(event){
@@ -51,42 +55,51 @@ FieldsTags = {
 		});
 
 		if(info.typeahead) {
-			FieldsTags.dom[info.id] = ev => {
-				if((info.typeahead == 'json') || (info.typeahead == 'function')) {
-					let list, listElem;
-
-					let value = ev.target.value;
-
-					if(typeof info.source == 'string') {
-						list = FieldsTags.typeAheadFilterList(eval(info.source), value);
-					}
-					else if(typeof info.source == 'object') {
-						list = FieldsTags.typeAheadFilterList(info.source, value);
-					}
-
-					listElem = FieldsTags.typeAheadFormatList(elem, list);
-
-					let destiny = ev.target.parentNode.querySelector('.typeAheadList');
-					destiny.innerHTML = '';
-					destiny.appendChild(listElem);
-				}
-			};
-
-			elem.addEventListener('keyup', ev => {
-				if((ev.keyCode != 38) && (ev.keyCode != 40)) {
-					FieldsTags.dom[ev.target.id](ev);
-				}
-			});
-
-			elem.addEventListener('blur', ev => {
-				setTimeout(() => {
-					ev.target.parentNode.querySelector('.typeAheadList').innerHTML = '';
-				}, 100);
-			});
+			FieldsTags.setDomTypeAheadEvent(elem, info);
 		}
 
-
 		return elem;
+	},
+
+
+	setDomTypeAheadEvent: (elem, info) => {
+		FieldsTags.dom[info.id] = ev => {
+			if((info.typeahead == 'json') || (info.typeahead == 'function')) {
+				let list, listElem;
+
+				let value = ev.target.value;
+
+				if(typeof info.source == 'string') {
+					list = FieldsTags.typeAheadFilterList(eval(info.source), value);
+				}
+				else if(typeof info.source == 'object') {
+					list = FieldsTags.typeAheadFilterList(info.source, value);
+				}
+
+				let destiny = ev.target.parentNode.querySelector('.typeAheadList');
+				destiny.innerHTML = '';
+
+				if(parseInt(info.minLength) > 0) {
+					if(value.length < info.minLength) return;
+				}
+				
+				listElem = FieldsTags.typeAheadFormatList(elem, list);
+
+				destiny.appendChild(listElem);
+			}
+		};
+
+		elem.addEventListener('keyup', ev => {
+			if((ev.keyCode != 38) && (ev.keyCode != 40)) {
+				FieldsTags.dom[ev.target.id](ev);
+			}
+		});
+
+		elem.addEventListener('blur', ev => {
+			setTimeout(() => {
+				ev.target.parentNode.querySelector('.typeAheadList').innerHTML = '';
+			}, 100);
+		});
 	},
 
 
@@ -153,10 +166,12 @@ FieldsTags = {
 	typeAheadFormatListItem: item => {
 		let extra;
 		let label = document.createElement('div');
+		label.classList.add('itemText');
 		label.innerHTML = item.label;
 
 		if(item.extra) {
 			extra = document.createElement('div');
+			extra.classList.add('itemExtra');
 			extra.innerHTML = item.extra;
 		}
 

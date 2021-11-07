@@ -8,6 +8,10 @@ if(isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 	$http = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
 }
 
+//Force https
+$http = 'https://';
+
+
 define('HTTP',       $http);
 
 define('USER_IP',    ((isset($_SERVER['HTTP_X_FORWARDED_FOR']))
@@ -16,7 +20,8 @@ define('USER_IP',    ((isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 
 define('ROOT_URL',   HTTP . $_SERVER['HTTP_HOST'] .'/');
 
-define('ROOT',       dirname('__FILE__');
+define('ROOT',       pathinfo(__FILE__)['dirname'] .'/');
+
 define('R4PHP',      ROOT .'_assets/r4/php/');
 
 define('SYSTEMID',   'lerio');
@@ -24,10 +29,11 @@ define('DEVMODE',    true);
 
 define('SECRETKEY',  'As39Jsç2a²-aj12#%[8AZc a2!f"a57jh');
 
-define('DBBASE',     'db'        );
-define('DBUSER',     'sistema'   );
-define('DBPASS',     'abisla'    );
-define('INDEXTABLE', '_sistema'  );
-define('DBTABLE',    (isset($_SESSION[SYSTEMID]['SELTABLE']))
-                     ? $_SESSION[SYSTEMID]['SELTABLE']
-                     : INDEXTABLE);
+define('INDEXDB',       'localhost' );
+define('INDEXTABLE',    '_sistema'  );
+define('NEWACCOUNTSDB', 'localhost');
+define('DBUSER',        'sistema'   );
+define('DBPASS',        'abisla'    );
+define('DBTABLE',       (isset($_SESSION[SYSTEMID]['SELTABLE']))
+                        ? $_SESSION[SYSTEMID]['SELTABLE']
+                        : INDEXTABLE);

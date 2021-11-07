@@ -4,8 +4,8 @@ const Produtos = {
 
 	listaOpcoes: [
 		{ key: 14, label: 'Joe Gaston'  },
-		{ key: 17, label: 'Arpei Rept'  },
-		{ key: 1,  label: 'João Silva', extra: 'CPF: 012.031.152-51' },
+		{ key: 17, label: 'Asrpei Rept'  },
+		{ key: 1,  label: 'João Silvas', extra: 'CPF: 012.031.152-51' },
 		{ key: 20, label: 'Peiter Casc' }
 	],
 

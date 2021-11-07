@@ -7,7 +7,7 @@ class LinkedIn {
 
 	private $clientId     = '';
 	private $clientSecret = '';
-	private $redirectUri  = 'https://dev.local/login/providers/returl.php?retli';
+	private $redirectUri  = ROOT_URL .'login/providers/returl.php?retli';
 	private $scope        = [];
 	private $client       = '';
 

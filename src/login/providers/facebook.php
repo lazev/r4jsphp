@@ -7,7 +7,7 @@ class Facebook {
 
 	private $clientId        = '835715783770816';
 	private $clientSecret    = '4edd31478ff5aea307c502acf43a0eba';
-	private $redirectUri     = 'https://dev.local/login/providers/returl.php?retfb';
+	private $redirectUri     = ROOT_URL .'login/providers/returl.php?retfb';
 	private $graphApiVersion = 'v11.0';
 	private $scope           = [];
 	private $client          = '';

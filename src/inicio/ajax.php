@@ -6,7 +6,7 @@ require ROOT .'inicio/inicio.class.php';
 
 $inicio = new Inicio;
 
-$check = $db->connect(null, '_sistema');
+$check = $db->connect(INDEXDB, INDEXTABLE);
 
 if($check === false) {
 	R4::dieAPI(0, $db->errMsg, $db->errObs);
@@ -50,11 +50,11 @@ switch($_REQUEST['com']) {
 		break;
 
 
-	case 'salvarConta':
+	case 'inserirConta':
 
 		$cod = R4::getSession('userCod');
 
-		$ret = $inicio->salvarConta($cod, $_REQUEST['nome']);
+		$ret = $inicio->inserirConta($cod, $_REQUEST['nome']);
 
 		if($ret === false) {
 			R4::dieAPI(0, $inicio->errMsg, $inicio->errObs);
@@ -91,7 +91,7 @@ switch($_REQUEST['com']) {
 
 
 	default:
-		R4::dieAPI(0, 'Nenhum comando válido informado');
+		R4::dieAPI(0, 'Nenhum comando vรกlido informado');
 }
 
 

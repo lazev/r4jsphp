@@ -49,6 +49,8 @@ if(isset($provider)) {
 				//emails
 				//picture
 
+				$db->connect(INDEXDB, INDEXTABLE);
+				
 				require_once ROOT .'login/login.class.php';
 				$login = new Login;
 

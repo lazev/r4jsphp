@@ -7,9 +7,9 @@ if(!defined('R4ALREADYINIT')) {
 
 	$db = new DB();
 
-	if(defined('DBBASE')) {
+	if(defined('INDEXDB')) {
 		$dbtable = (defined('DBTABLE'))  ? DBTABLE : '';
-		$db->connect(DBBASE, $dbtable);
+		$db->connect(INDEXDB, $dbtable);
 	}
 
 } else {

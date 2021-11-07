@@ -7,7 +7,7 @@ class Google {
 
 	private $clientId     = '554836546389-7aa3kiuuaa3fe9ip7d4ioeps8pipqn8p.apps.googleusercontent.com';
 	private $clientSecret = '45sj5F2-GQgpvqPGYtoLsYUL';
-	private $redirectUri  = 'https://localhost/login/providers/returl.php?retgg';
+	private $redirectUri  = ROOT_URL .'login/providers/returl.php?retgg';
 	private $scope        = [];
 	private $client       = '';
 

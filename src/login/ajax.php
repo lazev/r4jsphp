@@ -6,7 +6,7 @@ require ROOT .'login/login.class.php';
 
 $login = new Login;
 
-$db->connect(DBBASE, INDEXTABLE);
+$db->connect(INDEXDB, INDEXTABLE);
 
 switch($_REQUEST['com']) {
 
@@ -54,7 +54,7 @@ case 'login':
 
 
 default:
-	R4::dieAPI(0, 'Nenhum comando válido informado');
+	R4::dieAPI(0, 'Nenhum comando vรกlido informado');
 }
 
 require R4PHP .'r4iniend.php';

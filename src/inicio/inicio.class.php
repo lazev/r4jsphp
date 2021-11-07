@@ -24,19 +24,19 @@ class Inicio {
 
 		$db->sql("
 			update `usuarios`
-			set nome='$nome'
-			where codigo='$userCod'
+			set nome = '$nome'
+			where codigo = $userCod
 			limit 1
 		");
 
-		$pega = $db->sql("
+		$usuario = $db->sql("
 			select nome
 			from `usuarios`
-			where codigo='$userCod'
+			where codigo = $userCod
 			limit 1
 		");
 
-		return $pega;
+		return $usuario;
 	}
 
 
@@ -46,9 +46,10 @@ class Inicio {
 		$codUser  = (int)$codUser;
 
 		$ret = $db->sql("
-			select *
-			from `contas`
-			where codUser='$codUser'
+			select A.*
+			from `contas` A, `usuariosContas` B
+			where B.codUsuario = $codUser
+			and B.codConta = A.codigo
 		");
 
 		return $ret;
@@ -62,10 +63,10 @@ class Inicio {
 		$codConta = (int)$codConta;
 
 		$ret = $db->sql("
-			select codigo
-			from `contas`
-			where codigo='$codConta'
-			and codUser='$codUser'
+			select codigo, situAcesso
+			from `usuariosContas`
+			where codigo = $codConta
+			and codUsuario = $codUser
 			limit 1
 		");
 
@@ -75,7 +76,32 @@ class Inicio {
 			return false;
 		}
 
-		$check = $db->connect(null, 'la_'. $codConta);
+		if($ret['situAcesso'] == 90) {
+			$this->errMsg = 'Não foi possível acessar a conta';
+			$this->errObs = 'O acesso deste usuário está bloqueado';
+			return false;
+		}
+
+		$conta = $db->sql("
+			select serverDB, bloqueado, ativo
+			from `contas`
+			where codigo = $codConta
+			limit 1
+		");
+		
+		if($conta['bloqueado']) {
+			$this->errMsg = 'Não foi possível acessar a conta';
+			$this->errObs = 'O acesso desta conta está bloqueado';
+			return false;
+		}
+		
+		if($conta['ativo'] == 0) {
+			$this->errMsg = 'Não foi possível acessar a conta';
+			$this->errObs = 'Esta conta foi inativada no sistema';
+			return false;
+		}
+		
+		$check = $db->connect($conta['serverDB'], 'la_'. $codConta);
 		if($check === false) {
 			$this->errMsg = 'Erro ao selecionar a base da conta';
 			$this->errObs = 'A base da conta informada não foi encontrada';
@@ -86,7 +112,7 @@ class Inicio {
 	}
 
 
-	public function salvarConta($userCod, $contaNome='') {
+	public function inserirConta($userCod, $contaNome='') {
 		global $db;
 
 		if(!(int)$userCod){
@@ -95,43 +121,55 @@ class Inicio {
 			return false;
 		}
 
-		$hora = $db->sql("select now() as 'agora' limit 1");
-
-		$db->sql("insert into `contas`", [
-			'codUser' => $userCod,
-			'nome'    => $contaNome,
-			'dtCad'   => $hora['agora']
+		$ret = $db->sql("insert into `contas`", [
+			'serverDB'   => NEWACCOUNTSDB,
+			'nome'       => $contaNome
 		]);
+		
+		if($ret === false) {
+			$this->errMsg = 'Erro ao criar a nova conta';
+			$this->errObs = 'Não foi possível criar uma nova conta na base';
+			return false;
+		}
 
 		$codConta = $db->getInsertId();
 
-		$pega = $db->sql("
+		$conta = $db->sql("
 			select codigo, nome, dtCad, dtAcesso
 			from `contas`
-			where codigo='$codConta'
+			where codigo = $codConta
 			limit 1
 		");
 
+		$db->sql("insert into `usuariosContas`", [
+			'codConta'   => $codConta,
+			'codUsuario' => $userCod,
+			'dono'       => 1,
+			'situAcesso' => 50
+		]);
+
+		$db->connect(NEWACCOUNTSDB);
+		
 		$check = $this->createDB($codConta);
 		if($check === false) return false;
 
-		$db->connect(null, '_sistema');
+		$db->connect(INDEXDB, INDEXTABLE);
 
-		if(empty($pega['nome'])) {
+		if(empty($conta['nome'])) {
 
 			$nome = 'Conta id #'. $codConta;
 
 			$db->sql("
-				update `usuarios`
-				set nome='$nome'
-				where codigo='$codConta'
+				update `contas`
+				set nome = '$nome'
+				where codigo = $codConta
 				limit 1
 			");
 
-			$pega['nome'] = $nome;
+			$conta['nome'] = $nome;
 		}
 
-		return $pega;
+		return $conta;
 	}
 
 
@@ -169,5 +207,7 @@ class Inicio {
 		");
 
 		R4::setSession('SELTABLE', 'la_'. $cod);
+		
+		return true;
 	}
 }

@@ -7,7 +7,7 @@ class Instagram {
 
 	private $clientId     = '';
 	private $clientSecret = '';
-	private $redirectUri  = 'https://dev.local/login/providers/returl.php?retig';
+	private $redirectUri  = ROOT_URL .'login/providers/returl.php?retig';
 	private $scope        = [];
 	private $client       = '';
 

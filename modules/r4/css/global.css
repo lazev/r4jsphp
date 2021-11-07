@@ -50,6 +50,13 @@ SVG Icons - svgicons.sparkk.fr
 .onRight  { float: right;       }
 .onLeft   { float: left;        }
 
+.badge {
+	border-radius: 3px;
+	padding: 3px;
+	background-color: #2196f3;
+	color: white;
+}
+
 .corner { border-radius: 3px; }
 
 .paspatur { padding: 20px; }

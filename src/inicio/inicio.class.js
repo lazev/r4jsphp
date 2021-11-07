@@ -39,7 +39,7 @@ const Inicio = {
 					label:   'Criar nova conta',
 					classes: 'bgSuccess',
 					onClick: function(){
-						Inicio.salvarConta();
+						Inicio.inserirConta();
 					}
 				},
 				{
@@ -117,10 +117,10 @@ const Inicio = {
 	},
 
 
-	salvarConta: () => {
+	inserirConta: () => {
 
 		let params = {
-			com: 'salvarConta',
+			com: 'inserirConta',
 			nome: $('#inicioNomeConta').val()
 		};
 

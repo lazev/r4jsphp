@@ -20,7 +20,7 @@ const WebAuth = {
 				alg: -7
 			}],
 
-			attestation: "direct",
+			attestation: "none",
 
 			timeout: 60000,
 
@@ -58,8 +58,8 @@ const WebAuth = {
 				transports: ["usb", "nfc", "ble"],
 				type: "public-key"
 			}];
-		WebAuth.getCredentialDefaultArgs.publicKey.allowCredentials = idList;
-		return navigator.credentials.get(WebAuth.getCredentialDefaultArgs);
+			WebAuth.getCredentialDefaultArgs.publicKey.allowCredentials = idList;
+			return navigator.credentials.get(WebAuth.getCredentialDefaultArgs);
 		})
 		.then((assertion) => {
 			console.log("ASSERTION", assertion);
