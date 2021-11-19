@@ -70,58 +70,6 @@ class DB {
 	}
 
 
-	public function insert($tableName, $dataFields=[], $stripTags=true, $errorAlert=true) {
-
-		if(!$tableName) {
-			$this->errMsg = 'DB error';
-			$this->errObs = 'tableName is missing';
-			return false;
-		}
-
-		if(!is_array($dataFields)) {
-			$this->errMsg = 'DB error';
-			$this->errObs = 'dataFields must be array';
-			return false;
-		}
-
-		foreach($dataFields as $key => $value) {
-			if(!empty($key)) {
-				$fields[] = $key;
-				if($stripTags) $value = strip_tags($value);
-				$value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
-				$value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/u', '', $value);
-				$value = str_replace('\0', '/0', $value);
-				$values[] = addslashes($value);
-			}
-		}
-
-		$com = "insert into $tableName";
-
-		$field = implode(', ', $fields);
-		$value = implode('\', \'', $values);
-		$com = $com ." ($field) values ('$value');";
-
-		if(!$this->DBCon->query($com)) {
-			if($errorAlert) {
-				$this->errorMonitor(
-					'MySQL error on '
-					. $this->baseNow .'@'
-					. $this->hostNow .': '
-					. $this->DBCon->errno .' - '
-					. $this->DBCon->error .'. '
-					. 'Command: '. $com
-				);
-			}
-			$this->errCod = $this->DBCon->errno;
-			$this->errMsg = $this->DBCon->error;
-			$this->errCom = $com;
-			return false;
-		}
-
-		return $this->getInsertId();
-	}
-
-
 	public function sql($com, $dataFields='', $stripTags=true, $errorAlert=true) {
 
 		$com = trim($com);
@@ -129,26 +77,36 @@ class DB {
 		//If $dataFields is empty, just run the $com command
 		if(!empty($dataFields)) {
 			if(is_array($dataFields)) {
-				foreach($dataFields as $key => $value) {
-					if(!empty($key)) {
-						$fields[] = $key;
-						if($stripTags) $value = strip_tags($value);
-						$value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
-						$value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/u', '', $value);
-						$value = str_replace('\0', '/0', $value);
-						$values[] = addslashes($value);
+				foreach($dataFields as $field => $value) {
+					if(!empty($field)) {
+						$fields[] = addslashes($field);
+						
+						if((is_numeric($value)) || ($value === 'now()'))
+							$values[] = $value;
+						elseif($value === NULL)
+							$values[] = 'NULL';
+						else {
+							if($stripTags) $value = strip_tags($value);
+							$value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
+							$value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/u', '', $value);
+							$value = str_replace('\0', '/0', $value);
+							$value = addslashes($value);
+							$values[] = "'". $value ."'";
+						}
 					}
 				}
 			}
-			//If it is an insert command
+
 			if(strtolower(substr($com, 0, 6)) == 'insert') { //INSERT
 				$field = implode(', ', $fields);
-				$value = implode('\', \'', $values);
-				$com = $com .' ('. $field .') values (\''. $value .'\')';
+				$value = implode(', ', $values);
+				$com = $com .' ('. $field .') values ('. $value .')';
 			}
-			//If it is an update command
+
 			elseif(strtolower(substr($com, 0, 6)) == 'update') { //UPDATE
-				foreach($fields as $key => $value) $texts[] = $value .'=\''. $values[$key] .'\'';
+				foreach($fields as $key => $field) {
+					$texts[] = $field .'='. $values[$key];
+				}
 				$text = implode(', ', $texts);
 				$com = str_replace('[fields]', $text, $com);
 			}
@@ -293,7 +251,7 @@ class DB {
 
 	public function getCurrentConfig() {
 		return [
-			'host'  => $this->hostNow,
+			'host'   => $this->hostNow,
 			'dbname' => $this->baseNow
 		];
 	}

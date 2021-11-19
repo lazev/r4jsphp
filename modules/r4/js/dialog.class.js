@@ -3,7 +3,7 @@ var Dialog = {
 	onOpenFuncs: {},
 	beforeCloseFuncs: {},
 	onCloseFuncs: {},
-	
+
 	create: function(opts) {
 		return new Promise((resolve, reject) => {
 
@@ -195,7 +195,6 @@ var Dialog = {
 
 
 	closeOverlay: function(idOver) {
-		console.log(idOver);
 		let over = document.getElementById(idOver);
 		let idElem = idOver.replace('R4Overlay-', '');
 		let retBefClose = true;

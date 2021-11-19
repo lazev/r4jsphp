@@ -17,7 +17,7 @@ switch($_REQUEST['com']) {
 
 	case 'getInit':
 
-		$contas = $inicio->listarContas(R4::getSession('userCod'));
+		$contas = $inicio->listarContas(R4::getSession('idUser'));
 
 		R4::retOkAPI([
 			'contas' => $contas,
@@ -31,9 +31,9 @@ switch($_REQUEST['com']) {
 
 	case 'salvarNome':
 
-		$cod = R4::getSession('userCod');
+		$id = R4::getSession('idUser');
 
-		$ret = $inicio->salvarNome($cod, $_REQUEST['val']);
+		$ret = $inicio->salvarNome($id, $_REQUEST['val']);
 
 		if($ret === false) {
 			R4::dieAPI(0, $inicio->errMsg, $inicio->errObs);
@@ -52,15 +52,15 @@ switch($_REQUEST['com']) {
 
 	case 'inserirConta':
 
-		$cod = R4::getSession('userCod');
+		$id = R4::getSession('idUser');
 
-		$ret = $inicio->inserirConta($cod, $_REQUEST['nome']);
+		$ret = $inicio->inserirConta($id, $_REQUEST['nome']);
 
 		if($ret === false) {
 			R4::dieAPI(0, $inicio->errMsg, $inicio->errObs);
 		}
 
-		R4::setSession('contaCod', $ret['codigo']);
+		R4::setSession('idConta', $ret['id']);
 
 		R4::retOkAPI([
 			'dados' => $ret
@@ -71,10 +71,10 @@ switch($_REQUEST['com']) {
 
 	case 'selConta':
 
-		$codUser  = R4::getSession('userCod');
-		$codConta = $_REQUEST['cod'];
+		$idUser  = R4::getSession('idUser');
+		$idConta = $_REQUEST['id'];
 
-		$ret = $inicio->selConta($codUser, $codConta);
+		$ret = $inicio->selConta($idUser, $idConta);
 
 		if($ret === false) {
 			R4::dieAPI(0, $inicio->errMsg, $inicio->errObs);
@@ -82,8 +82,8 @@ switch($_REQUEST['com']) {
 
 		//R4::dieAPI(0, '$this->errMsg', '$this->errObs');
 
-		R4::setSession('contaCod', $codConta);
-		R4::setSession('SELTABLE', 'la_'. $codConta);
+		R4::setSession('idConta', $idConta);
+		R4::setSession('SELTABLE', 'la_'. $idConta);
 
 		R4::retOkAPI();
 

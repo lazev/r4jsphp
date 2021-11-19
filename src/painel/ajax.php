@@ -16,7 +16,7 @@ switch($_REQUEST['com']) {
 
 	case 'getInit':
 
-		$contas = $painel->listarContas(R4::getSession('userCod'));
+		$contas = $painel->listarContas(R4::getSession('idUser'));
 
 		R4::retOkAPI();
 

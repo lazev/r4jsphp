@@ -1,6 +1,6 @@
 const Produtos = {
 
-	codProduto: 0,
+	idProduto: 0,
 
 	listaOpcoes: [
 		{ key: 14, label: 'Joe Gaston'  },
@@ -40,27 +40,6 @@ const Produtos = {
 		Produtos.initFields();
 		Produtos.initList();
 		Produtos.getInit();
-
-
-		//Modelo de render
-		//*
-		let infoElem = $().render($0('#tplProdutosInfoBox'), {
-			nomeCerveja: 'SKOL',
-			IBU: '-5'
-		});
-
-		$0('#infoBox').append(infoElem);
-		//*/
-
-		//Modelo de render com lista
-		//*
-		let tabelaElem = $().render($0('#tplProdutosListaIBU'), Produtos.listaIBU);
-		console.log(tabelaElem);
-		tabelaElem.forEach(item => {
-			console.log(item);
-			$0('#listaIBU').append(item);
-		});
-		//*/
 	},
 
 
@@ -92,7 +71,7 @@ const Produtos = {
 	initList: () => {
 
 		let head = [
-			{ label: 'Cod',   orderBy: 'codigo' },
+			{ label: 'Cod',   orderBy: 'id' },
 			{ label: 'Nome',  orderBy: 'nome'   },
 			{ label: 'Preco', orderBy: 'preco', type: 'decimal', }
 		];
@@ -120,7 +99,7 @@ const Produtos = {
 
 
 	insert: () => {
-		Produtos.codProduto = 0;
+		Produtos.idProduto = 0;
 
 		$('#formProdutos').reset();
 
@@ -133,12 +112,12 @@ const Produtos = {
 
 		let params = {
 			com: 'read',
-			codProduto: id
+			idProduto: id
 		};
 
 		$().getJSON(Produtos.pathAjax, params)
 		.then(ret => {
-			Produtos.codProduto = ret.produto.codigo;
+			Produtos.idProduto = ret.produto.id;
 
 			$('#prod_nome').val(       ret.produto.nome       );
 			$('#prod_categoria').val(  ret.produto.categoria  );
@@ -151,11 +130,11 @@ const Produtos = {
 	},
 
 
-	save: codProduto => {
+	save: idProduto => {
 
 		let params = {
 			com:        'save',
-			codProduto: Produtos.codProduto,
+			idProduto: Produtos.idProduto,
 			nome:       $('#prod_nome').val(),
 			categoria:  $('#prod_categoria').val(),
 			preco:      $('#prod_preco').val(),
@@ -167,7 +146,19 @@ const Produtos = {
 
 		.then(ret => {
 
-			Warning.on('Produto cod '+ ret.produto.codigo);
+			let btn = document.createElement('button');
+			btn.setAttribute('type', 'button');
+			btn.classList.add('R4');
+			btn.innerHTML = 'Detalhar';
+			btn.addEventListener('click', ev => {
+				ev.preventDefault();
+				Produtos.edit(ret.produto.id);
+			});
+
+			Warning.on(
+				'Produto '+ ret.produto.id +' salvo com sucesso',
+				btn
+			);
 
 			Produtos.list();
 
@@ -258,9 +249,9 @@ const Produtos = {
 				goodVal = (item.preco > 20) ? 'success' : '';
 
 				body.push({
-					value: item.codigo,
+					value: item.id,
 					cells: [
-						item.codigo,
+						item.id,
 						item.nome,
 						item.preco
 					],

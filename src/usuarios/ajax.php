@@ -2,10 +2,18 @@
 require '../config.inc.php';
 require R4PHP .'r4iniend.php';
 
-require ROOT .'produtos/produtos.class.php';
+require ROOT .'usuarios/usuarios.class.php';
 
-$produtos = new Produtos;
+$check = $db->connect(INDEXDB, INDEXTABLE);
+if($check === false) {
+	R4::dieAPI(0, $db->errMsg, $db->errObs);
+}
 
+$usuarios = new Usuarios;
+
+if(!$usuarios->setUsersConta(R4::getSession('idConta'))) {
+	R4::dieAPI(0, $usuarios->errMsg, $usuarios->errObs);
+}
 
 switch($_REQUEST['com']) {
 
@@ -18,16 +26,16 @@ switch($_REQUEST['com']) {
 
 	case 'read':
 
-		$id = (int)$_REQUEST['idProduto'];
+		$id = (int)$_REQUEST['idUser'];
 
-		$dados = $produtos->read($id);
+		$dados = $usuarios->read($id);
 
 		if($dados === false) {
-			R4::dieAPI(0, $produtos->errMsg, $produtos->errObs);
+			R4::dieAPI(0, $usuarios->errMsg, $usuarios->errObs);
 		}
 
 		R4::retOkAPI([
-			'produto' => $dados
+			'usuario' => $dados
 		]);
 
 		break;
@@ -35,16 +43,16 @@ switch($_REQUEST['com']) {
 
 	case 'save':
 
-		$id = (int)$_REQUEST['idProduto'];
+		$id = (int)$_REQUEST['idUser'];
 
-		$dados = $produtos->save($id, $_REQUEST);
+		$dados = $usuarios->save($id, $_REQUEST);
 
 		if($dados === false) {
-			R4::dieAPI(0, $produtos->errMsg, $produtos->errObs);
+			R4::dieAPI(0, $usuarios->errMsg, $usuarios->errObs);
 		}
 
 		R4::retOkAPI([
-			'produto' => $dados
+			'usuario' => $dados
 		]);
 
 		break;
@@ -55,10 +63,10 @@ switch($_REQUEST['com']) {
 		$listFilter = @$_REQUEST['listFilter'] ?: [];
 		$listParams = @$_REQUEST['listParams'] ?: [];
 
-		$dados = $produtos->list($listFilter, $listParams);
+		$dados = $usuarios->list($listFilter, $listParams);
 
 		if($dados === false) {
-			R4::dieAPI(0, $produtos->errMsg, $produtos->errObs);
+			R4::dieAPI(0, $usuarios->errMsg, $usuarios->errObs);
 		}
 
 		R4::retOkAPI([
@@ -73,10 +81,10 @@ switch($_REQUEST['com']) {
 
 		$ids = $_REQUEST['ids'];
 
-		$dados = $produtos->delete($ids);
+		$dados = $usuarios->delete($ids);
 
 		if($dados === false) {
-			R4::dieAPI(0, $produtos->errMsg, $produtos->errObs);
+			R4::dieAPI(0, $usuarios->errMsg, $usuarios->errObs);
 		}
 
 		R4::retOkAPI([

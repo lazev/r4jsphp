@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="utf-8" />
+	<base href="https://lerio-owoxm.run-us-west2.goorm.io/lazevcalc/">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link rel="icon" href="imgs/favicon.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Calculadora simples com histórico">
+	<meta name="theme-color" content="#282A36">
+	<title>Lazev Calc</title>
+</head>
+<style>
+	* {
+		font-family: monospace, sans-serif;
+	}
+
+	html, body {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		font-size: 16px;
+	}
+
+	header {
+		position: fixed;
+		top: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 10;
+	}
+
+	#menu {
+		text-align: center;
+		color: white;
+		position: absolute;
+		background: white;
+		width: 100%;
+		height: 40px;
+		top: 0;
+		left: -100vw;
+		transition: 0.2s;
+		font-size: 14px;
+	}
+
+	#menu button {
+		background: white;
+		border: 0;
+		width: 34px;
+		height: 34px;
+		border-radius: 2px;
+		margin-top: 3px;
+		cursor: pointer;
+	}
+
+	#menu.opened {
+		left: 0;
+		background: #006293;
+	}
+
+	#showMenuBtn {
+		position: absolute;
+		background: #5555E3;
+		width: 30px;
+		height: 40px;
+		border-radius: 5px;
+		left: -15px;
+		top: 0;
+		cursor: pointer;
+		transition: 0.2s;
+	}
+
+	#showMenuBtn.opened {
+		right: -15px;
+		left: unset;
+	}
+
+	#historyBox {
+		height: calc(100vh - 40px);
+		min-height: 100px;
+		min-width: 100px;
+		border: 1px solid gray;
+		margin: 0;
+		padding: 0;
+		background: #282a36;
+		color: white;
+	}
+
+	#historyBox > table {
+		width: 100%;
+		position: absolute;
+		bottom: 40px;
+	}
+
+	#historyBox > table > tbody > tr > td:nth-child(even) {
+		color: #1E90FF;
+		font-weight: bold;
+		width: 10px;
+		padding: 0 6px;
+	}
+
+	#historyBox > table > tbody > tr > td {
+		border-bottom: 1px gray dashed;
+		padding: 4px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		max-width: 0;
+	}
+
+	#historyBox > table > tbody > tr > td:hover {
+		color: #3AFF3C;
+		background: #343746;
+		cursor: pointer;
+	}
+
+	#historyBox > table > tbody > tr > td:first-child {
+		text-align: right;
+	}
+
+	footer {
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 40px;
+	}
+
+	#inputer {
+		width: 100vw;
+		margin: 0;
+		padding: 10px 30px 10px 10px;
+		border: 1px solid white;
+		background: #84b9d4;
+		box-sizing: border-box;
+		height: 40px;
+		font-size: inherit;
+	}
+
+	#btnClearInput {
+		margin-left: -40px;
+		cursor: pointer;
+		position: relative;
+		font-size: 24px;
+		color: #7f6a95;
+	}
+</style>
+<body>
+	<header>
+		<div id="menu" class="opened">
+			<button class="btnFontSize" value="2" title="Aumentar fonte">+A</button>
+			<button class="btnFontSize" value="-2" title="Diminuir fonte">-A</button>
+			<span>Lazev Calc</span>
+			<button id="btnClearHist" title="Limpar histórico">☀</button>
+			<button id="btnPopup" title="Destacar da tela">
+				<svg style="display: inline-block; width: 1em; height: 1em;" viewbox="0 0 48 48">
+				<path d="M36 24c-1.2 0-2 0.8-2 2v12c0 1.2-0.8 2-2 2h-22c-1.2
+				0-2-0.8-2-2v-22c0-1.2 0.8-2 2-2h12c1.2 0 2-0.8 2-2s-0.8-2-2-2h-12c-3.4
+				0-6 2.6-6 6v22c0 3.4 2.6 6 6 6h22c3.4 0 6-2.6
+				6-6v-12c0-1.2-0.8-2-2-2z"></path>
+				<path d="M43.8 5.2c-0.2-0.4-0.6-0.8-1-1-0.2-0.2-0.6-0.2-0.8-0.2h-12c-1.2
+				0-2 0.8-2 2s0.8 2 2 2h7.2l-18.6 18.6c-0.8 0.8-0.8 2 0 2.8 0.4 0.4 0.8
+				0.6 1.4 0.6s1-0.2 1.4-0.6l18.6-18.6v7.2c0 1.2 0.8 2 2 2s2-0.8
+				2-2v-12c0-0.2 0-0.6-0.2-0.8z"></path>
+				</svg>
+			</button>
+		</div>
+		<div id="showMenuBtn" class="opened"></div>
+	</header>
+	<main id="historyBox">
+		<table><tbody></tbody></table>
+	</main>
+	<footer>
+		<input type="text" inputmode="tel" id="inputer" />
+		<label for="inputer">Calc</label>
+		<span id="btnClearInput">×</span>
+	</footer>
+
+	<script>
+		if('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('sw.js');
+		};
+
+		const inputer     = document.getElementById('inputer');
+		const historyBox  = document.getElementById('historyBox');
+		const showMenuBtn = document.getElementById('showMenuBtn');
+
+		var fontSize = localStorage.getItem('fontSize') || 16;
+		var histLog  = localStorage.getItem('calcHistory');
+		var jsonCalc = (histLog) ? JSON.parse(histLog).slice(-250) : [];
+
+		document.getElementById('btnClearHist').addEventListener('click', ev => {
+			clearHistory();
+		});
+
+		document.getElementById('btnClearInput').addEventListener('click', ev => {
+			setValToOper('');
+		});
+
+		document.getElementById('btnPopup').addEventListener('click', ev => {
+			window.open(
+				window.location, '_blank',
+				'toolbar=no,scrollbars=no,resizable=no,width=400,height=500'
+			);
+		})
+
+		historyBox.addEventListener('click', ev => {
+			inputer.focus();
+		});
+
+		inputer.addEventListener('keypress', ev => {
+			if(ev.keyCode == 13 || ev.keyCode == 61) {
+				ev.preventDefault();
+				doCalc(ev.target);
+			}
+		});
+
+		showMenuBtn.addEventListener('click', ev => {
+			toggleMenu();
+		});
+
+		document.querySelectorAll('.btnFontSize').forEach(elem => {
+			elem.addEventListener('click', ev => {
+				changeFontSize(ev.target);
+			});
+		});
+
+		document.body.style.fontSize = fontSize +'px';
+
+		loadStorage();
+
+
+		function clearHistory() {
+			if(confirm('Limpar histórico?')) {
+				localStorage.removeItem('fontSize');
+				localStorage.removeItem('calcHistory');
+				historyBox.querySelector('table > tbody').innerHTML = '';
+			}
+		}
+
+		function changeFontSize(elem) {
+			let tamanho = parseInt(elem.value) + parseInt(document.body.style.fontSize);
+			document.body.style.fontSize = tamanho + 'px';
+			localStorage.setItem('fontSize', tamanho);
+		}
+
+		function toggleMenu(force) {
+			if(showMenuBtn.classList.contains('opened') || (force && force=='close')) {
+				showMenuBtn.classList.remove('opened');
+				document.getElementById('menu').classList.remove('opened')
+			} else {
+				showMenuBtn.classList.add('opened');
+				document.getElementById('menu').classList.add('opened')
+			}
+		}
+
+		function loadStorage() {
+			jsonCalc.forEach(line => {
+				let arr = line.split('=');
+				addHistoryLine(arr[0], arr[1]);
+				setValToOper(arr[1]);
+			})
+		}
+
+		function doCalc(elem) {
+			let formula   = elem.value;
+			let resultado = numberFormat(eval(dot(formula)));
+
+			setValToOper(resultado);
+
+			addHistoryLine(formula, resultado);
+			addStorageLine(formula, resultado);
+			document.title = resultado +' Lazev Calc';
+			toggleMenu('close');
+		}
+
+		function addHistoryLine(formula, resultado) {
+
+			let linha = document.createElement('tr');
+			let col1  = document.createElement('td');
+			let col2  = document.createElement('td');
+			let col3  = document.createElement('td');
+
+			col1.innerHTML = formula;
+			col2.innerHTML = '=';
+			col3.innerHTML = resultado;
+
+			col1.setAttribute('title', formula);
+			col3.setAttribute('title', resultado);
+
+			col1.addEventListener('click', ev => setValToOper(ev.target.innerHTML));
+			col3.addEventListener('click', ev => setValToOper(ev.target.innerHTML));
+
+			linha.append(col1);
+			linha.append(col2);
+			linha.append(col3);
+
+			historyBox.querySelector('table > tbody').append(linha);
+		}
+
+		function addStorageLine(formula, resultado) {
+			jsonCalc.push(formula +'='+ resultado);
+			localStorage.setItem('calcHistory', JSON.stringify(jsonCalc));
+		}
+
+		function setValToOper(value) {
+			value = value.replace(' = ', '');
+			if(value == '0') value = '';
+			inputer.value = value;
+			inputer.focus();
+		}
+
+		function numberFormat(num) {
+			return new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 6 }).format(num);
+		}
+
+		function dot(num) {
+			num = num.toString().replaceAll('.', '');
+			num = num.replaceAll(',', '.');
+			return num;
+		}
+	</script>
+</body>
+</html>

@@ -5,12 +5,12 @@ class Inicio {
 	public $errMsg = '';
 	public $errObs = '';
 
-	public function salvarNome($userCod, $nome) {
+	public function salvarNome($idUser, $nome) {
 		global $db;
 
-		$userCod = (int)$userCod;
+		$idUser = (int)$idUser;
 
-		if(!$userCod){
+		if(!$idUser){
 			$this->errMsg = 'Código não informado';
 			$this->errObs = 'Não foi possível identificar o código do cadastro';
 			return false;
@@ -25,14 +25,14 @@ class Inicio {
 		$db->sql("
 			update `usuarios`
 			set nome = '$nome'
-			where codigo = $userCod
+			where id = $idUser
 			limit 1
 		");
 
 		$usuario = $db->sql("
 			select nome
 			from `usuarios`
-			where codigo = $userCod
+			where id = $idUser
 			limit 1
 		");
 
@@ -40,39 +40,39 @@ class Inicio {
 	}
 
 
-	public function listarContas($codUser) {
+	public function listarContas($idUser) {
 		global $db;
 
-		$codUser  = (int)$codUser;
+		$idUser = (int)$idUser;
 
 		$ret = $db->sql("
 			select A.*
 			from `contas` A, `usuariosContas` B
-			where B.codUsuario = $codUser
-			and B.codConta = A.codigo
+			where B.idUsuario = $idUser
+			and B.idConta = A.id
 		");
 
 		return $ret;
 	}
 
 
-	public function selConta($codUser, $codConta) {
+	public function selConta($idUser, $idConta) {
 		global $db;
 
-		$codUser  = (int)$codUser;
-		$codConta = (int)$codConta;
+		$idUser  = (int)$idUser;
+		$idConta = (int)$idConta;
 
 		$ret = $db->sql("
-			select codigo, situAcesso
+			select id, situAcesso
 			from `usuariosContas`
-			where codigo = $codConta
-			and codUsuario = $codUser
+			where id = $idConta
+			and idUsuario = $idUser
 			limit 1
 		");
 
-		if(!$ret['codigo']) {
+		if(!$ret['id']) {
 			$this->errMsg = 'Não foi possível localizar a conta';
-			$this->errObs = 'Não há nenhuma conta de código '. $codConta .' para seu usuário';
+			$this->errObs = 'Não há nenhuma conta de código '. $idConta .' para seu usuário';
 			return false;
 		}
 
@@ -85,7 +85,7 @@ class Inicio {
 		$conta = $db->sql("
 			select serverDB, bloqueado, ativo
 			from `contas`
-			where codigo = $codConta
+			where id = $idConta
 			limit 1
 		");
 		
@@ -101,21 +101,21 @@ class Inicio {
 			return false;
 		}
 		
-		$check = $db->connect($conta['serverDB'], 'la_'. $codConta);
+		$check = $db->connect($conta['serverDB'], 'la_'. $idConta);
 		if($check === false) {
 			$this->errMsg = 'Erro ao selecionar a base da conta';
 			$this->errObs = 'A base da conta informada não foi encontrada';
 			return false;
 		}
 
-		return $ret['codigo'];
+		return $ret['id'];
 	}
 
 
-	public function inserirConta($userCod, $contaNome='') {
+	public function inserirConta($idUser, $contaNome='') {
 		global $db;
 
-		if(!(int)$userCod){
+		if(!(int)$idUser){
 			$this->errMsg = 'Código não informado';
 			$this->errObs = 'Não foi possível identificar o código do usuário';
 			return false;
@@ -132,37 +132,53 @@ class Inicio {
 			return false;
 		}
 
-		$codConta = $db->getInsertId();
+		$idConta = $db->getInsertId();
 
 		$conta = $db->sql("
-			select codigo, nome, dtCad, dtAcesso
+			select id, nome, dtCad, dtAcesso
 			from `contas`
-			where codigo = $codConta
+			where id = $idConta
 			limit 1
 		");
 
 		$db->sql("insert into `usuariosContas`", [
-			'codConta'   => $codConta,
-			'codUsuario' => $userCod,
+			'idConta'    => $idConta,
+			'idUsuario'  => $idUser,
 			'dono'       => 1,
 			'situAcesso' => 50
 		]);
 
 		$db->connect(NEWACCOUNTSDB);
 		
-		$check = $this->createDB($codConta);
-		if($check === false) return false;
+		
+		require_once ROOT .'inicio/database.class.php';
+		$database = new Database;
+		$database->setNameDB($idConta);
+
+		$check = $database->createDB();
+		if($check === false) {
+			$this->errMsg = $database->errMsg;
+			$this->errObs = $database->errObs;
+			return false;
+		}
+
+		$check = $database->createTables();
+		if($check === false) {
+			$this->errMsg = $database->errMsg;
+			$this->errObs = $database->errObs;
+			return false;
+		}
 
 		$db->connect(INDEXDB, INDEXTABLE);
 
 		if(empty($conta['nome'])) {
 
-			$nome = 'Conta id #'. $codConta;
+			$nome = 'Conta id #'. $idConta;
 
 			$db->sql("
 				update `contas`
 				set nome = '$nome'
-				where codigo = $codConta
+				where id = $idConta
 				limit 1
 			");
 
@@ -170,44 +186,5 @@ class Inicio {
 		}
 
 		return $conta;
-	}
-
-
-	private function createDB($cod) {
-		global $db;
-
-		$cod = (int)$cod;
-		if(!$cod) {
-			$this->errMsg = 'Cód da conta não informado';
-			$this->errObs = 'Não foi possível criar a conta';
-			return false;
-		}
-
-		$db->sql("create database `la_". $cod ."` collate 'utf8mb4_general_ci';");
-
-		if(!$db->connect(null, 'la_'. $cod)) {
-			$this->errMsg = 'Erro ao criar a conta';
-			$this->errObs = $db->errCod .' - '. $db->errMsg;
-			return false;
-		}
-
-		$db->sql("
-			CREATE TABLE `produtos` (
-				`codigo` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
-				`categoria` varchar(50) NOT NULL,
-				`nome` varchar(100) NOT NULL,
-				`preco` decimal(10,2) UNSIGNED NOT NULL,
-				`comEstoque` tinyint(1) NOT NULL DEFAULT '1',
-				`tags` varchar(200) NOT NULL,
-				`dtCad` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				`dtDel` datetime DEFAULT NULL,
-				`ativo` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
-				PRIMARY KEY (`codigo`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-		");
-
-		R4::setSession('SELTABLE', 'la_'. $cod);
-		
-		return true;
 	}
 }

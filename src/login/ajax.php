@@ -18,8 +18,12 @@ case 'getInit':
 	require_once 'providers/google.php';
 	$gg = new Google;
 
+	$logged = R4::getSession('userLogged');
+
+	if(!$logged) $logged = $login->checkKeepLogged();
+
 	R4::retOkAPI([
-		'logged'    => $login->checkKeepLogged(),
+		'logged'    => $logged,
 		'fbAuthUrl' => $fb->getAuthorizationUrl(),
 		'ggAuthUrl' => $gg->getAuthorizationUrl()
 	]);
@@ -29,21 +33,18 @@ case 'getInit':
 
 case 'login':
 
-	$userCod = $login->check([
+	$idUser = $login->check([
 		'user' => $_REQUEST['user'],
-		'pass' => $_REQUEST['pass']
+		'pass' => $_REQUEST['pass'],
+		'save' => $_REQUEST['save']
 	]);
 
-	if($userCod === false) {
+	if($idUser === false) {
 		die(json_encode([
 			'error'  => 1,
 			'errMsg' => $login->errMsg,
 			'errObs' => $login->errObs
 		]));
-	}
-
-	if(isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
-		$login->genKeepLogged($userCod);
 	}
 
 	R4::retOkAPI([

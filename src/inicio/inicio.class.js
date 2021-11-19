@@ -135,19 +135,19 @@ const Inicio = {
 	addHTMLConta:  dados => {
 
 		let t = ''
-			+ '<div class="linhaConta" cod="'+ dados.codigo +'">'
-			+ '<div>'+ dados.codigo                 +'</div>'
+			+ '<div class="linhaConta" idConta="'+ dados.id +'">'
+			+ '<div>'+ dados.id                     +'</div>'
 			+ '<div>'+ dados.nome                   +'</div>'
 			+ '<div>'+ $().dateMask(dados.dtAcesso) +'</div>'
 			+ '</div>';
 
 		$('#boxContas').append(t);
 
-		$('.linhaConta[cod="'+ dados.codigo +'"]').click(function(event) {
+		$('.linhaConta[idConta="'+ dados.id +'"]').click(function(event) {
 
 			let params = {
 				com: 'selConta',
-				cod: $(this).attr('cod')
+				id:  $(this).attr('idConta')
 			};
 
 			$().getJSON(Inicio.pathAjax, params)

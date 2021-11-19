@@ -35,17 +35,17 @@ var Warning = {
 
 		let msgElem = document.createElement('div');
 		msgElem.classList.add('R4WarningMsg');
-		msgElem.innerHTML = msg;
-		elem.appendChild(msgElem);
+		msgElem.append(msg);
+		elem.append(msgElem);
 
 		if(obs) {
 			let obsElem = document.createElement('div');
 			obsElem.classList.add('R4WarningObs');
-			obsElem.innerHTML = obs;
-			elem.appendChild(obsElem);
+			obsElem.append(obs);
+			elem.append(obsElem);
 		}
 
-		container.appendChild(elem);
+		container.append(elem);
 
 		return id;
 	},

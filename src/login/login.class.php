@@ -12,6 +12,7 @@ class Login {
 
 		$user = $params['user'];
 		$pass = $params['pass'];
+		$save = $params['save'];
 
 		if(empty($user)) {
 			$this->errMsg = 'Erro no login';
@@ -43,7 +44,7 @@ class Login {
 			return false;
 		}
 
-		return $this->setLoginOk($dados);
+		return $this->setLoginOk($dados, $save);
 	}
 
 
@@ -72,7 +73,7 @@ class Login {
 			return false;
 		}
 
-		return $this->setLoginOk($dados);
+		return $this->setLoginOk($dados, 1);
 	}
 
 
@@ -81,65 +82,69 @@ class Login {
 
 		if(!$cookie) return false;
 
-		list($random, $userCod, $token, $mac) = explode(':', $cookie);
+		list($random, $idUser, $token, $mac) = explode(':', $cookie);
 
 		if(!hash_equals(
-			hash_hmac('sha256', $random .':'. $userCod .':'. $token, SECRETKEY), $mac
+			hash_hmac('sha256', $random .':'. $idUser .':'. $token, SECRETKEY), $mac
 		)) {
 			return false;
 		}
 
-		$keepLogged = $this->getKeepLoggedTokenByUser((int)$userCod, (int)$random);
+		$keepLogged = $this->getKeepLoggedTokenByUser((int)$idUser, (int)$random);
 
 		if(!$keepLogged) return false;
 
 		if(!hash_equals($keepLogged['token'], $token)) return false;
 
-		$this->setKeepLoggedDtAcesso($keepLogged['codigo'], date('Y-m-d H:i:s'));
+		$this->setKeepLoggedDtAcesso($keepLogged['id'], date('Y-m-d H:i:s'));
 
 		return $this->setLoginOk(
-			$this->getParamsByUserCod($userCod)
+			$this->getParamsByIdUser($idUser)
 		);
 	}
 
 
-	public function setLoginOk($params) {
+	public function setLoginOk($params, $save=0) {
 		global $db;
 
-		if($params['codigo']) {
+		if($params['id']) {
 			$db->sql("
 				update `usuarios`
 				set dtAcesso=now()
-				where codigo='". $params['codigo'] ."'
+				where id = ". $params['id'] ."
 				limit 1
 			");
 
-			if(!isset($params['codigo']))     return false;
+			if(!isset($params['id']))         return false;
 			if(!isset($params['user']))       $params['user']       = '';
 			if(!isset($params['nome']))       $params['nome']       = '';
 			if(!isset($params['provider']))   $params['provider']   = '';
 			if(!isset($params['providerId'])) $params['providerId'] = '';
 
 			R4::setSession('userLogged',     1);
-			R4::setSession('userCod',        $params['codigo']);
+			R4::setSession('idUser',         $params['id']);
 			R4::setSession('userUser',       $params['user']);
 			R4::setSession('userNome',       $params['nome']);
 			R4::setSession('userProvider',   $params['provider']);
 			R4::setSession('userProviderId', $params['providerId']);
 
-			return $params['codigo'];
+			if($save) {
+				$this->genKeepLogged($params['id']);
+			}
+
+			return $params['id'];
 		}
 
 		return false;
 	}
 
 
-	public function genKeepLogged($userCod) {
+	public function genKeepLogged($idUser) {
 		global $db;
 
 		$token  = bin2hex(random_bytes(128));
 		$random = rand(100000, 999999);
-		$cookie = $random .':'. $userCod .':'. $token;
+		$cookie = $random .':'. $idUser .':'. $token;
 		$mac    = hash_hmac('sha256', $cookie, SECRETKEY);
 
 		if(!$mac) {
@@ -149,10 +154,10 @@ class Login {
 		}
 
 		$db->sql("insert into `keepLogged`", [
-			'codUser'  => $userCod,
-			'random'   => $random,
-			'token'    => $token,
-			'dtAcesso' => date('Y-m-d H:i:s')
+			'idUsuario' => $idUser,
+			'random'    => $random,
+			'token'     => $token,
+			'dtAcesso'  => date('Y-m-d H:i:s')
 		]);
 
 		$cookie .= ':' . $mac;
@@ -173,38 +178,38 @@ class Login {
 	}
 
 
-	private function getParamsByUserCod($userCod) {
+	private function getParamsByIdUser($idUser) {
 		global $db;
 
-		$userCod = (int)$userCod;
+		$idUser = (int)$idUser;
 
 		return $db->sql("
 			select * from `usuarios`
-			where codigo = $userCod
+			where id = $idUser
 			limit 1
 		");
 	}
 
 
-	private function getKeepLoggedTokenByUser($userCod, $random) {
+	private function getKeepLoggedTokenByUser($idUser, $random) {
 		global $db;
 
 		return $db->sql("
-			select codigo, token from `keepLogged`
-			where codUser = $userCod
+			select id, token from `keepLogged`
+			where idUser = $idUser
 			and random = $random
 			limit 1
 		");
 	}
 
 
-	private function setKeepLoggedDtAcesso($cod, $dtAcesso) {
+	private function setKeepLoggedDtAcesso($id, $dtAcesso) {
 		global $db;
 
 		$db->sql("
 			update `keepLogged`
 			set dtAcesso = '$dtAcesso'
-			where codigo = $cod
+			where id = $id
 		");
 	}
 }

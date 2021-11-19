@@ -65,7 +65,7 @@ if(isset($provider)) {
 
 					$retnew = $signup->saveProvider($params);
 
-					if(!$retnew['cod']) {
+					if(!$retnew['id']) {
 						header('location: '. ROOT_URL .'login/#msg='. $login->errMsg .'&obs='. $login->errObs);
 					} else {
 						header('location: '. ROOT_URL .'inicio/');

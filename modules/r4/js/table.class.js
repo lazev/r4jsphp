@@ -68,18 +68,18 @@ var Table = {
 
 		let info = Table.getInfo(destiny);
 
-		if(params.orderBy)    info.orderBy    = params.orderBy.trim();
-		if(params.nowPage)    info.nowPage    = params.nowPage;
-		if(params.regPerPage) info.regPerPage = params.regPerPage;
-		if(params.totalReg)   info.totalReg   = params.totalReg;
+		if(params.orderBy)     info.orderBy     = params.orderBy.trim();
+		if(params.currentPage) info.currentPage = params.currentPage;
+		if(params.regPerPage)  info.regPerPage  = params.regPerPage;
+		if(params.totalReg)    info.totalReg    = params.totalReg;
 
-		destiny.setAttribute('orderBy',    info.orderBy    );
-		destiny.setAttribute('nowPage',    info.nowPage    );
-		destiny.setAttribute('regPerPage', info.regPerPage );
-		destiny.setAttribute('totalReg',   info.totalReg   );
+		destiny.setAttribute('orderBy',     info.orderBy     );
+		destiny.setAttribute('currentPage', info.currentPage );
+		destiny.setAttribute('regPerPage',  info.regPerPage  );
+		destiny.setAttribute('totalReg',    info.totalReg    );
 
 		Table.updateOrderBy(destiny,    info.orderBy, clicked);
-		Table.updatePagination(destiny, info.regPerPage, info.totalReg, info.nowPage);
+		Table.updatePagination(destiny, info.regPerPage, info.totalReg, info.currentPage);
 		Table.updateRegPerPage(destiny, info.regPerPage);
 	},
 
@@ -88,10 +88,10 @@ var Table = {
 		let arr = [];
 		let destiny = elem[0] || elem;
 
-		arr.orderBy    = destiny.getAttribute('orderBy')    || '';
-		arr.nowPage    = destiny.getAttribute('nowPage')    || 1;
-		arr.regPerPage = destiny.getAttribute('regPerPage') || 15;
-		arr.totalReg   = destiny.getAttribute('totalReg')   || 0;
+		arr.orderBy     = destiny.getAttribute('orderBy')     || '';
+		arr.currentPage = destiny.getAttribute('currentPage') || 1;
+		arr.regPerPage  = destiny.getAttribute('regPerPage')  || 15;
+		arr.totalReg    = destiny.getAttribute('totalReg')    || 0;
 
 		return arr;
 	},
@@ -398,13 +398,13 @@ var Table = {
 	},
 	
 
-	updatePagination: function(destiny, regPerPage, totalReg, nowPage){
+	updatePagination: function(destiny, regPerPage, totalReg, currentPage){
 
 		regPerPage  = parseInt(regPerPage);
 		totalReg    = parseInt(totalReg);
-		nowPage     = parseInt(nowPage);
+		currentPage = parseInt(currentPage);
 
-		let lastreg = (nowPage) * regPerPage;
+		let lastreg = (currentPage) * regPerPage;
 		let lastpg  = Math.ceil(totalReg/regPerPage)-1;
 
 		let pgntn = destiny.querySelector('.R4TablePgntn');
@@ -416,12 +416,12 @@ var Table = {
 
 		let lnkFirst, lnkPrev, lnkNext, lnkLast;
 		
-		if(nowPage <= 1) {
+		if(currentPage <= 1) {
 			lnkFirst = Table.createPgntnBtn(0, '&#x219E', 'light', true);
 			lnkPrev  = Table.createPgntnBtn(0, '&#x21BC', 'light', true);
 		} else {
-			lnkFirst = Table.createPgntnBtn(0,         '&#x219E', 'primary', false);
-			lnkPrev  = Table.createPgntnBtn(nowPage-1, '&#x21BC', 'primary', false);
+			lnkFirst = Table.createPgntnBtn(0,             '&#x219E', 'primary', false);
+			lnkPrev  = Table.createPgntnBtn(currentPage-1, '&#x21BC', 'primary', false);
 			hasPgs = true;
 		}
 		
@@ -429,8 +429,8 @@ var Table = {
 			lnkNext = Table.createPgntnBtn(0, '&#x21C0', 'light', true);
 			lnkLast = Table.createPgntnBtn(0, '&#x21A0', 'light', true);
 		} else {
-			lnkNext = Table.createPgntnBtn(nowPage+1, '&#x21C0', 'primary', false);
-			lnkLast = Table.createPgntnBtn(lastpg+1,  '&#x21A0', 'primary', false);
+			lnkNext = Table.createPgntnBtn(currentPage+1, '&#x21C0', 'primary', false);
+			lnkLast = Table.createPgntnBtn(lastpg+1,      '&#x21A0', 'primary', false);
 			hasPgs = true;
 		}
 
@@ -457,7 +457,7 @@ var Table = {
 					item.addEventListener('click', function(){
 						if(typeof Table.dom[idDestiny].onPagination === 'function') {
 
-							Table.setInfo(destiny, { nowPage: gotopg } );
+							Table.setInfo(destiny, { currentPage: gotopg } );
 
 							Table.dom[idDestiny].onPagination(gotopg);
 						}
@@ -484,7 +484,7 @@ var Table = {
 				if(typeof Table.dom[idDestiny].onRegPerPage === 'function') {
 					Table.setInfo(
 						document.getElementById(idDestiny),
-						{ regPerPage: item, nowPage: 1 }
+						{ regPerPage: item, currentPage: 1 }
 					);
 
 					Table.dom[idDestiny].onRegPerPage(item);

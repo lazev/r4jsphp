@@ -26,12 +26,12 @@ class SignUp {
 		}
 
 		$veri = $db->sql("
-			select codigo from `usuarios`
+			select id from `usuarios`
 			where user='$user'
 			limit 1
 		");
 
-		if($veri && $veri['codigo']) {
+		if($veri && $veri['id']) {
 			$this->errMsg = 'Usuário já cadastrado';
 			$this->errObs = 'O e-mail informado já está em uso';
 			$this->errCod = 10;
@@ -67,14 +67,14 @@ class SignUp {
 
 		$db->sql("insert into `usuarios`", $dados);
 
-		$cod = $db->getInsertId();
+		$id = $db->getInsertId();
 
-		$dados['codigo'] = $cod;
+		$dados['id'] = $id;
 
 		$login->setLoginOk($dados);
 
 		return [
-			'cod'  => $cod,
+			'id'   => $id,
 			'user' => $user
 		];
 
@@ -97,16 +97,14 @@ class SignUp {
 
 		$db->sql("insert into `usuarios`", $dados);
 
-		$cod = $db->getInsertId();
+		$id = $db->getInsertId();
 
-		$dados['codigo'] = $cod;
+		$dados['id'] = $id;
 
 		$login->setLoginOk($dados);
 
 		return [
-			'cod'  => $cod
+			'id'  => $id
 		];
-
 	}
-
 }
