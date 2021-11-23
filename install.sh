@@ -40,15 +40,15 @@ else
 
 	mysql -u $userdb -p$passdb _sistema < utils/kickStartDB.sql
 
+	cd modules
+
+	composer install
+
 	mkdir public
 
 	echo -e '\e[1;34m'
 
 	./compiler.php
-
-	cd modules
-
-	composer install
 
 	echo -e '\e[1;32m'
 
