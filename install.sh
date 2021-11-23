@@ -44,6 +44,8 @@ else
 
 	composer install
 
+	cd ..
+
 	mkdir public
 
 	echo -e '\e[1;34m'
@@ -55,7 +57,5 @@ else
 	echo 'Instalação finalizada com sucesso!'
 
 	echo -e '\e[0;37m'
-
-	cd ..
 
 fi
