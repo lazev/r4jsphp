@@ -4,12 +4,12 @@ class Api {
 
 	public $errMsg = '';
 	public $errObs = '';
-	
+
 	public $method = '';
 	public $arrBody = [];
 	public $idModule = '';
 	public $detailModule = '';
-	
+
 	public $situAcesso = [
 		10 => 'Acesso OK',
 		30 => 'Conta inválida',
@@ -18,13 +18,13 @@ class Api {
 		60 => 'API bloqueada',
 		70 => 'Muitas requisições'
 	];
-	
+
 	private $allowedMethods = ['HEAD', 'DELETE', 'POST', 'GET', 'PUT', 'OPTIONS'];
-	
+
 	public function setBodyContent($content) {
 		$this->arrBody = json_decode($content, 1);
 	}
-	
+
 	public function setIdModule($id) {
 		$this->idModule = $id;
 	}
@@ -40,7 +40,7 @@ class Api {
 		}
 
 		$this->method = $method;
-		
+
 		return true;
 	}
 
@@ -51,9 +51,9 @@ class Api {
 		error_log('Efetuando acesso...');
 
 		$idConta = (int)str_replace('id', '', $user);
-		
+
 		$serverDB = $this->getFastAccess($user, $pass);
-		
+
 		error_log('Pos fast access: '. $serverDB);
 
 		if($serverDB === false) {
@@ -67,7 +67,7 @@ class Api {
 		$this->setFastAccess($user, $pass, $serverDB);
 
 		error_log('Conectou '. $serverDB .' e '. $idConta);
-		
+
 		$db->connect($serverDB, 'la_'. $idConta);
 
 		return true;
@@ -144,7 +144,7 @@ class Api {
 		}
 
 		$key = USER_IP .'|'. $user;
-		
+
 		if($redis->exists($key)) {
 			$value = explode('|', $redis->get($key));
 
@@ -158,10 +158,12 @@ class Api {
 
 
 	private function connectRedis() {
+		if(!class_exists('Redis')) return false;
+
 		$redis = new Redis();
 		$ret = $redis->connect('127.0.0.1', 6379);
 		//$redis->auth('REDIS_PASSWORD');
-		
+
 		if(!$redis->ping()) return false;
 
 		return $redis;
@@ -178,7 +180,8 @@ class Api {
 		$redis = $this->connectRedis();
 		if($redis === false) {
 			error_log('Erro ao conectar o REDIS que verifica a taxa de requests da API');
-			$this->die418();
+			//Se o Redis não foi encontrado, pula essa validação
+			return true;
 		}
 
 		$totalCalls = 0;
@@ -202,18 +205,18 @@ class Api {
 				return false;
 			 }
 		}
-		
+
 		return true;
 	}
-	
-	
+
+
 	private function registerAccess($params) {
 		global $db;
 
 		$db->connect(INDEXDB, INDEXTABLE);
 
 		$secPeriod = (isset($params['secPeriod'])) ? $params['secPeriod'] : 0;
-		
+
 		$db->sql("insert into `apiAccessLog`", [
 			'ip'        => USER_IP,
 			'user'      => $params['user'] ?: '',
@@ -245,7 +248,7 @@ class Api {
 		]);
 		exit;
 	}
-	
+
 	public function die405() {
 		header('WWW-Authenticate: Basic realm="Valid method required"');
 		header('HTTP/1.0 405 Method Not Allowed');
@@ -278,7 +281,7 @@ class Api {
 		]);
 		exit;
 	}
-		
+
 	public function die429() {
 		header('WWW-Authenticate: Basic realm="Request rate is 10/sec"');
 		header('HTTP/1.0 429 Too Many Requests');

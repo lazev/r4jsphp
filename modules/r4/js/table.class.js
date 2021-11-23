@@ -36,7 +36,7 @@ var Table = {
 		table.setAttribute('class', classes.join(' '));
 
 		if(head) table.appendChild(head);
-		
+
 		table.appendChild(tbody);
 		table.appendChild(tfoot);
 
@@ -44,7 +44,7 @@ var Table = {
 		destiny.appendChild(table);
 
 		if(arrInfo) Table.setInfo(destiny, arrInfo);
-		
+
 		Table.updateContent(destiny, arrBody, arrFoot);
 
 		if(opts.onPagination) {
@@ -112,7 +112,7 @@ var Table = {
 
 			th = document.createElement('th');
 			th.appendChild(span);
-			
+
 			if((position == 0) && (Table.dom[idDestiny].withCheck)) {
 				let chkelem = document.createElement('input');
 				chkelem.setAttribute('type', 'checkbox');
@@ -128,7 +128,7 @@ var Table = {
 			if(cell.type == 'decimal') {
 				th.classList.add('right');
 			}
-			
+
 			if(cell.orderBy) {
 				span.setAttribute('orderBy', cell.orderBy);
 				span.addEventListener('click', function(event) {
@@ -196,14 +196,14 @@ var Table = {
 		}
 
 		line.cells.forEach(function(value, position){
-			
+
 			td = document.createElement('td');
 
 			if(Table.dom[idDestiny].head[position].type == 'decimal') {
 				value = $().toEUNumber(value);
 				td.classList.add('right');
 			}
-			
+
 			if((!footLine) && (position == 0) && (Table.dom[idDestiny].withCheck)) {
 				let chkelem = document.createElement('input');
 				chkelem.setAttribute('type', 'checkbox');
@@ -244,7 +244,7 @@ var Table = {
 		tbody.innerHTML = '';
 	},
 
-	
+
 	clearFoot: function(elem) {
 		let destiny = elem[0] || elem;
 		let tfoot = destiny.querySelector('table > tfoot');
@@ -387,7 +387,7 @@ var Table = {
 		return pgntn;
 	},
 
-	
+
 	createPgntnBtn: function(numPage, icon, colorClass, disabled) {
 		let btn = document.createElement('button');
 		btn.setAttribute('class',  'R4 bgWhite '+ colorClass +' ');
@@ -396,7 +396,7 @@ var Table = {
 		btn.innerHTML = icon;
 		return btn;
 	},
-	
+
 
 	updatePagination: function(destiny, regPerPage, totalReg, currentPage){
 
@@ -415,7 +415,7 @@ var Table = {
 		let hasPgs = false;
 
 		let lnkFirst, lnkPrev, lnkNext, lnkLast;
-		
+
 		if(currentPage <= 1) {
 			lnkFirst = Table.createPgntnBtn(0, '&#x219E', 'light', true);
 			lnkPrev  = Table.createPgntnBtn(0, '&#x21BC', 'light', true);
@@ -424,7 +424,7 @@ var Table = {
 			lnkPrev  = Table.createPgntnBtn(currentPage-1, '&#x21BC', 'primary', false);
 			hasPgs = true;
 		}
-		
+
 		if(lastreg >= totalReg) {
 			lnkNext = Table.createPgntnBtn(0, '&#x21C0', 'light', true);
 			lnkLast = Table.createPgntnBtn(0, '&#x21A0', 'light', true);
@@ -518,7 +518,7 @@ var Table = {
 
 	getAllSel: function(idElem) {
 		let ret = [];
-		document.querySelectorAll('#'+ idElem +' input:checked').forEach(elem => {
+		document.querySelectorAll('#'+ idElem +' tbody input:checked').forEach(elem => {
 			ret.push(elem.value);
 		});
 		return ret;

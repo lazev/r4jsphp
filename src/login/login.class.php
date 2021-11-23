@@ -196,7 +196,7 @@ class Login {
 
 		return $db->sql("
 			select id, token from `keepLogged`
-			where idUser = $idUser
+			where idUsuario = $idUser
 			and random = $random
 			limit 1
 		");

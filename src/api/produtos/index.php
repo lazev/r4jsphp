@@ -17,9 +17,9 @@ function moduleList($params=[]) {
 
 function moduleSave($id=0, $params) {
 	global $module;
-	
+
 	$id = (int)$id;
-	
+
 	if($id) {
 		return $module->update($id, $params);
 	} else {

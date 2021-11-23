@@ -184,7 +184,20 @@ const Produtos = {
 
 		.then(ret => {
 			if(ret.deleted.length) {
-				Warning.on('Itens excluidos: '+ ret.deleted.join(', '));
+
+				let btn = document.createElement('button');
+				btn.setAttribute('type', 'button');
+				btn.classList.add('R4');
+				btn.innerHTML = 'Desfazer';
+				btn.addEventListener('click', ev => {
+					ev.preventDefault();
+					Produtos.undel(ret.deleted.join(','));
+				});
+
+				Warning.on(
+					'Itens excluidos: '+ ret.deleted.join(', '),
+					btn
+				);
 				Produtos.list();
 			}
 
@@ -192,6 +205,36 @@ const Produtos = {
 				let k;
 				for(k in ret.alert) {
 					Warning.on('Erro na exclusão do item '+ k, ret.alert[k]);
+				}
+			}
+		});
+	},
+
+
+	undel: ids => {
+
+		if(!ids.length) {
+			Warning.on('Nenhum código informado para recuperação');
+			return;
+		}
+
+		let params = {
+			com: 'undel',
+			ids: ids
+		}
+
+		$().getJSON(Produtos.pathAjax, params)
+
+		.then(ret => {
+			if(ret.recovered.length) {
+				Warning.on('Itens recuperados: '+ ret.recovered.join(', '));
+				Produtos.list();
+			}
+
+			if(ret.alert) {
+				let k;
+				for(k in ret.alert) {
+					Warning.on('Erro na recuperação do item '+ k, ret.alert[k]);
 				}
 			}
 		});
@@ -280,7 +323,7 @@ const Produtos = {
 			listParams: [],
 			listFilter: []
 		};
-		
+
 		$().getJSON(Produtos.pathAjax, params)
 		.then(ret => {
 			return [

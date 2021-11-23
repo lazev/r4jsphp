@@ -12,7 +12,7 @@ if(!defined('ALREADYINITAPI')) {
 
 	require_once ROOT .'api/api.class.php';
 	$api = new Api;
-	
+
 	$user = (isset($_SERVER['PHP_AUTH_USER'])) ? $_SERVER['PHP_AUTH_USER'] : false;
 	$pass = (isset($_SERVER['PHP_AUTH_PW']))   ? $_SERVER['PHP_AUTH_PW']   : false;
 
@@ -33,11 +33,11 @@ if(!defined('ALREADYINITAPI')) {
 	]) === false) {
 		$api->die429();
 	}
-	
+
 	if($api->grantAccess($user, $pass) === false) {
 		$api->die401();
 	}
-	
+
 	if($api->setMethod($_SERVER['REQUEST_METHOD']) === false) {
 		$api->die405();
 	}
@@ -53,7 +53,7 @@ if(!defined('ALREADYINITAPI')) {
 		case 'GET':
 			if($api->idModule) {
 				$response = moduleRead($api->idModule);
-				
+
 				$detail = $api->detailModule;
 
 				if($detail) {
@@ -66,7 +66,7 @@ if(!defined('ALREADYINITAPI')) {
 					}
 					$response = $retDados;
 				}
-				
+
 			} else {
 				$response = moduleList();
 			}

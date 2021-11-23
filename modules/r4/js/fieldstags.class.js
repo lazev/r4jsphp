@@ -8,11 +8,11 @@ FieldsTags = {
 			if(info.maxSel) {
 				elem.setAttribute('maxSel', info.maxSel);
 
-				if(ev.keyCode != 8) {
+				if(ev.keyCode != 8 && ev.keyCode != 9) {
 					let vals = FieldsTags.getVal(elem, true);
 					if(vals.length >= info.maxSel) {
 						ev.preventDefault();
-					} 
+					}
 				}
 			}
 
@@ -53,7 +53,7 @@ FieldsTags = {
 				FieldsTags.addTag(elem, elem.value);
 				FieldsTags.withContent(event.target);
 			}, 100);
-			
+
 		});
 
 		elem.addEventListener('paste', function(event){
@@ -76,11 +76,11 @@ FieldsTags = {
 	setDomTypeAheadEvent: (elem, info) => {
 		FieldsTags.dom[info.id] = ev => {
 			let list, listElem;
-			
+
 			let destiny = ev.target.parentNode.querySelector('.typeAheadList');
-			
+
 			let value = ev.target.value;
-			
+
 			if(info.typeahead == 'json') {
 
 				if(typeof info.source == 'string') {
@@ -151,10 +151,10 @@ FieldsTags = {
 
 
 	typeAheadFilterList: (source, value) => {
-		
+
 		console.log(source);
 		console.log(value);
-		
+
 		value = value.toLowerCase();
 
 		let ret = source.filter((item) => {
@@ -231,7 +231,8 @@ FieldsTags = {
 		let maxSel = elem.getAttribute('maxSel');
 
 		let vals = FieldsTags.getVal(elem, true);
-		if(vals.length >= maxSel) {
+
+		if(maxSel && vals.length >= maxSel) {
 			elem.value = '';
 			return;
 		}

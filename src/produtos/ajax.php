@@ -87,6 +87,24 @@ switch($_REQUEST['com']) {
 		break;
 
 
+	case 'undel':
+
+		$ids = $_REQUEST['ids'];
+
+		$dados = $produtos->undel($ids);
+
+		if($dados === false) {
+			R4::dieAPI(0, $produtos->errMsg, $produtos->errObs);
+		}
+
+		R4::retOkAPI([
+			'recovered' => $dados['recovered'],
+			'alert'     => $dados['alert']
+		]);
+
+		break;
+
+
 	default:
 		R4::dieAPI(0, 'Nenhum comando vรกlido informado');
 }

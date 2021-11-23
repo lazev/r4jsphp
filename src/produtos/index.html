@@ -18,11 +18,13 @@
 				Produtos
 			</h2>
 		</header>
+
 		<main>
 
 			<div id="listaProdutos"></div>
 
 		</main>
+
 		<footer>
 			R4 Framework
 		</footer>
@@ -30,10 +32,10 @@
 		<link rel="stylesheet" type="text/css" href="produtos/style.css" />
 		<script defer src="produtos/produtos.class.js"></script>
 		<script>
-			const R4Init = async () => {
-				await Produtos.init();
-				Produtos.list();
-			}
+		const R4Init = async () => {
+			await Produtos.init();
+			Produtos.list();
+		}
 		</script>
 
 		<!--R4TEMPLATE-endBody-->

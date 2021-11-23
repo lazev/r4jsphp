@@ -1,13 +1,12 @@
 <?php
 
 class Database {
-	
+
 	public $errMsg = '';
 	public $errObs = '';
-	
+
 	private $dbname = '';
 	private $dbprefix = 'la_';
-
 
 	public function setNameDB($id) {
 
@@ -22,7 +21,7 @@ class Database {
 		$this->dbname = $this->dbprefix . $id;
 	}
 
-	
+
 	public function createDB() {
 		global $db;
 
@@ -33,12 +32,14 @@ class Database {
 			$this->errObs = $db->errCod .' - '. $db->errMsg;
 			return false;
 		}
-		
+
 		return true;
 	}
 
 
 	public function createTables() {
+		global $db;
+
 		$retcon = $db->connect(null, $this->dbname);
 		if($retcon === false) {
 			$this->errMsg = 'Não foi possível criar as tabelas da conta';
@@ -48,14 +49,14 @@ class Database {
 		$db->sql("
 			CREATE TABLE `produtos` (
 				`id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
-				`categoria` varchar(50) NOT NULL,
+				`categoria` varchar(50) NULL,
 				`nome` varchar(100) NOT NULL,
-				`preco` decimal(10,2) UNSIGNED NOT NULL,
-				`comEstoque` tinyint(1) NOT NULL DEFAULT '1',
-				`tags` varchar(200) NOT NULL,
+				`preco` decimal(10,2) UNSIGNED NOT NULL DEFAULT 0.00,
+				`comEstoque` tinyint(1) NOT NULL DEFAULT 1,
+				`tags` varchar(200) NULL,
 				`dtCad` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				`dtDel` datetime DEFAULT NULL,
-				`ativo` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
+				`dtDel` datetime NULL,
+				`ativo` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 				PRIMARY KEY (`id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 		");

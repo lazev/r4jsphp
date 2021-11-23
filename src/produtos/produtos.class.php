@@ -45,14 +45,14 @@ class Produtos {
 		} else {
 			$id = $this->insert($new);
 		}
-		
+
 		if($id === false) return false;
 
 		return [
 			'id' => $id
 		];
 	}
-	
+
 	public function insert($new) {
 		global $db;
 
@@ -68,17 +68,17 @@ class Produtos {
 		$db->sql('insert into `produtos`', $new);
 
 		$id = $db->getInsertId();
-		
+
 		if($id === false) {
 			$this->errMsg = 'Erro ao inserir o produto';
 			$this->errObs = '';
 			return false;
 		}
-		
+
 		return $id;
 	}
-	
-	
+
+
 	public function update($id, $new) {
 		global $db;
 
@@ -113,7 +113,7 @@ class Produtos {
 			$this->errObs = '';
 			return false;
 		}
-		
+
 		return $id;
 	}
 
@@ -169,6 +169,61 @@ class Produtos {
 		return [
 			'deleted' => $deleted,
 			'alert'   => $alert
+		];
+	}
+
+
+	public function undel($ids) {
+		global $db;
+
+		$listId = R4::intArray($ids);
+
+		$strId = implode(', ', $listId);
+
+		$produtos = $db->sql("
+			select id, ativo
+			from `produtos`
+			where id in ($strId)
+		");
+
+		foreach($produtos as $key => $item) {
+			$list[ $item['id'] ] = $item;
+		}
+
+		$recovered = [];
+		$alert   = [];
+
+		foreach($listId as $id) {
+
+			if(!$list[$id]['id']) {
+				$alert[$id] = 'Item não encontrado';
+				continue;
+			}
+
+			if($item['ativo'] != 0) {
+				$alert[$id] = 'Item não estava excluido';
+				continue;
+			}
+
+			$ret = $db->sql("
+				update `produtos`
+				set
+					dtDel = NULL,
+					ativo = 1
+				where id = $id
+			");
+
+			if($ret === false) {
+				$alert[$id] = 'Erro na recuperação do item';
+				continue;
+			}
+
+			$recovered[] = $id;
+		}
+
+		return [
+			'recovered' => $recovered,
+			'alert'     => $alert
 		];
 	}
 
