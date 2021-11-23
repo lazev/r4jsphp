@@ -5,6 +5,17 @@ FieldsTags = {
 	create: (elem, info) => {
 		elem.addEventListener('keydown', ev => {
 
+			if(info.maxSel) {
+				elem.setAttribute('maxSel', info.maxSel);
+
+				if(ev.keyCode != 8) {
+					let vals = FieldsTags.getVal(elem, true);
+					if(vals.length >= info.maxSel) {
+						ev.preventDefault();
+					} 
+				}
+			}
+
 			if(ev.keyCode == 188) {
 				ev.preventDefault();
 				FieldsTags.addTag(elem, elem.value);
@@ -64,10 +75,13 @@ FieldsTags = {
 
 	setDomTypeAheadEvent: (elem, info) => {
 		FieldsTags.dom[info.id] = ev => {
-			if((info.typeahead == 'json') || (info.typeahead == 'function')) {
-				let list, listElem;
-
-				let value = ev.target.value;
+			let list, listElem;
+			
+			let destiny = ev.target.parentNode.querySelector('.typeAheadList');
+			
+			let value = ev.target.value;
+			
+			if(info.typeahead == 'json') {
 
 				if(typeof info.source == 'string') {
 					list = FieldsTags.typeAheadFilterList(eval(info.source), value);
@@ -76,16 +90,25 @@ FieldsTags = {
 					list = FieldsTags.typeAheadFilterList(info.source, value);
 				}
 
-				let destiny = ev.target.parentNode.querySelector('.typeAheadList');
 				destiny.innerHTML = '';
 
 				if(parseInt(info.minLength) > 0) {
 					if(value.length < info.minLength) return;
 				}
-				
+
 				listElem = FieldsTags.typeAheadFormatList(elem, list);
 
 				destiny.appendChild(listElem);
+			}
+			else if(info.typeahead == 'function') {
+				if(typeof eval(info.source) === 'function') {
+
+					list = eval(info.source +'("'+ value +'")' );
+
+					listElem = FieldsTags.typeAheadFormatList(elem, list);
+
+					destiny.appendChild(listElem);
+				}
 			}
 		};
 
@@ -128,6 +151,10 @@ FieldsTags = {
 
 
 	typeAheadFilterList: (source, value) => {
+		
+		console.log(source);
+		console.log(value);
+		
 		value = value.toLowerCase();
 
 		let ret = source.filter((item) => {
@@ -201,7 +228,14 @@ FieldsTags = {
 
 		if(!val) return;
 
+		let maxSel = elem.getAttribute('maxSel');
+
 		let vals = FieldsTags.getVal(elem, true);
+		if(vals.length >= maxSel) {
+			elem.value = '';
+			return;
+		}
+
 		for(let k in vals) {
 			if(vals[k] == val) {
 				k++;
@@ -268,12 +302,12 @@ FieldsTags = {
 	},
 
 
-	getVal: (elem, arrFormat) => {
+	getVal: (elem, retArr) => {
 		let ret = [];
 		elem.parentNode.querySelector('.tagList').querySelectorAll('.tagItem').forEach(el => {
 			ret.push(el.getAttribute('value'));
 		});
-		if(arrFormat) return ret;
+		if(retArr) return ret;
 		return ret.join(',');
 	}
 

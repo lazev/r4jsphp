@@ -52,7 +52,21 @@ if(!defined('ALREADYINITAPI')) {
 	switch($api->method) {
 		case 'GET':
 			if($api->idModule) {
-				$response = moduleRead($api->idModule, $api->detailModule);
+				$response = moduleRead($api->idModule);
+				
+				$detail = $api->detailModule;
+
+				if($detail) {
+					$retDados = [];
+					if(strpos($detail, ',') !== false) {
+						$arr = explode(',', $detail);
+						foreach($arr as $item) $retDados[$item] = $response[$item];
+					} else {
+						$retDados[$detail] = $response[$detail];
+					}
+					$response = $retDados;
+				}
+				
 			} else {
 				$response = moduleList();
 			}

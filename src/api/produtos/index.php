@@ -5,9 +5,9 @@ require ROOT .'api/iniendapi.php';
 require_once ROOT .'produtos/produtos.class.php';
 $module = new Produtos;
 
-function moduleRead($id, $detail) {
+function moduleRead($id) {
 	global $module;
-	return $module->read($id, $detail);
+	return $module->read($id);
 }
 
 function moduleList($params=[]) {

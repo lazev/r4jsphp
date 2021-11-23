@@ -2,11 +2,11 @@
 
 class Database {
 	
-	public errMsg = '';
-	public errObs = '';
+	public $errMsg = '';
+	public $errObs = '';
 	
-	private $this->dbname = '';
-	private $this->dbprefix = 'la_';
+	private $dbname = '';
+	private $dbprefix = 'la_';
 
 
 	public function setNameDB($id) {

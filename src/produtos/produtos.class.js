@@ -2,14 +2,6 @@ const Produtos = {
 
 	idProduto: 0,
 
-	listaOpcoes: [
-		{ key: 14, label: 'Joe Gaston'  },
-		{ key: 17, label: 'Asrpei Rept'  },
-		{ key: 1,  label: 'João Silvas', extra: 'CPF: 012.031.152-51' },
-		{ key: 20, label: 'Peiter Casc' }
-	],
-
-
 	listaIBU: [
 		{ id: 1,   tipoBira: 'Standard American Lager',  IBU: '8-15'   },
 		{ id: 52,  tipoBira: 'GermanPilsen (Pils)',      IBU: '25-45'  },
@@ -280,5 +272,23 @@ const Produtos = {
 			console.log(err);
 			Warning.on('Erro', err);
 		})
+	},
+
+	acProdCateg: function(term) {
+		let params = {
+			com: 'list',
+			listParams: [],
+			listFilter: []
+		};
+		
+		$().getJSON(Produtos.pathAjax, params)
+		.then(ret => {
+			return [
+				{ key: 14, label: 'Joe Gaston'  },
+				{ key: 17, label: 'Asrpei Rept'  },
+				{ key: 1,  label: 'João Silvas', extra: 'CPF: 012.031.152-51' },
+				{ key: 20, label: 'Peiter Casc' }
+			];
+		});
 	}
 };

@@ -40,4 +40,27 @@ class R4 {
 		
 		return $ret;
 	}
+	
+	public static function mergeNewArr($old, $new) {
+		$merged  = [];
+		$changed = [];
+		
+		foreach($old as $key => $val) {
+			//Se o campo está informado no new
+			if(array_key_exists($key, $new)) {
+				//Se o valor novo é igual do old
+				if($old[$key] == $new[$key]) {
+					$merged[$key]  = $old[$key];
+				} else {
+					$merged[$key]  = $new[$key];
+					$changed[$key] = $new[$key];
+				}
+			}
+		}
+
+		return [
+			'merged'  => $merged,
+			'changed' => $changed
+		];
+	}
 }

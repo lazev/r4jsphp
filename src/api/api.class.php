@@ -54,12 +54,12 @@ class Api {
 		
 		$serverDB = $this->getFastAccess($user, $pass);
 		
-		error_log('Pós fast access: '. $serverDB);
+		error_log('Pos fast access: '. $serverDB);
 
 		if($serverDB === false) {
 			$serverDB = $this->getDBAccess($user, $pass, $idConta);
 
-			error_log('Pós DB access: '. $serverDB);
+			error_log('Pos DB access: '. $serverDB);
 		}
 
 		if($serverDB === false) return false;

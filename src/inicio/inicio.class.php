@@ -65,7 +65,7 @@ class Inicio {
 		$ret = $db->sql("
 			select id, situAcesso
 			from `usuariosContas`
-			where id = $idConta
+			where idConta = $idConta
 			and idUsuario = $idUser
 			limit 1
 		");

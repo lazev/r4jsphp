@@ -5,7 +5,7 @@ class Produtos {
 	public $errMsg = '';
 	public $errObs = '';
 
-	public function read($id, $detail='') {
+	public function read($id) {
 		global $db;
 
 		$id = (int)$id;
@@ -22,10 +22,6 @@ class Produtos {
 			where id = $id
 			limit 1
 		");
-		
-		if($detail) {
-			return $dados[$detail];
-		}
 
 		return $dados;
 	}
@@ -57,10 +53,22 @@ class Produtos {
 		];
 	}
 	
-	
-	public function insert($params) {
-		$id = $db->sql('insert into `produtos`', $params);
+	public function insert($new) {
+		global $db;
 
+		require_once R4PHP .'validFields.class.php';
+		$validFields = new ValidFields;
+		if(!$validFields->valid($new, dirname(__FILE__) .'/fields.json')) {
+			$this->errMsg    = $validFields->errMsg;
+			$this->errObs    = $validFields->errObs;
+			$this->errFields = $validFields->errFields;
+			return false;
+		}
+
+		$db->sql('insert into `produtos`', $new);
+
+		$id = $db->getInsertId();
+		
 		if($id === false) {
 			$this->errMsg = 'Erro ao inserir o produto';
 			$this->errObs = '';
@@ -71,10 +79,8 @@ class Produtos {
 	}
 	
 	
-	public function update($id, $params) {
+	public function update($id, $new) {
 		global $db;
-
-		$alt = [];
 
 		$old = $db->sql("
 			select *
@@ -83,15 +89,24 @@ class Produtos {
 			limit 1
 		");
 
-		foreach($old as $key => $val) {
-			$alt[$key] = (array_key_exists($key, $params)) ? $params[$key] : $old[$key];
+		$arr = R4::mergeNewArr($old, $new);
+		$new = $arr['merged'];
+		$alt = $arr['changed'];
+
+		require_once R4PHP .'validFields.class.php';
+		$validFields = new ValidFields;
+		if(!$validFields->valid($new, dirname(__FILE__) .'/fields.json')) {
+			$this->errMsg    = $validFields->errMsg;
+			$this->errObs    = $validFields->errObs;
+			$this->errFields = $validFields->errFields;
+			return false;
 		}
-		
+
 		$retdb = $db->sql("
 			update `produtos`
 			set [fields]
 			where id = $id
-		", $alt);
+		", $new);
 
 		if($retdb === false) {
 			$this->errMsg = 'Erro ao atualizar o produto';
