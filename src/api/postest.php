@@ -1,10 +1,4 @@
 <?php
-
-$redis = new Redis();
-$ret = $redis->connect('127.0.0.1', 6379);
-
-die();
-
 $url     = strtolower($_REQUEST['url'])    ?: 'https://localhost/api/produtos/';
 $method  = strtolower($_REQUEST['method']) ?: 'get';
 $payload = $_REQUEST['payload'];

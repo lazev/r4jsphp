@@ -11,7 +11,19 @@ switch($_REQUEST['com']) {
 
 	case 'getInit':
 
-		R4::retOkAPI();
+		$listaCores = [
+			12 => 'Azul',
+			45 => 'Vermelho',
+			18 => 'Amarelho',
+			21 => 'Verde',
+			82 => 'Cinza',
+			5  => 'Branco',
+			33 => 'Preto'
+		];
+
+		R4::retOkAPI([
+			'listaCores' => $listaCores
+		]);
 
 		break;
 
